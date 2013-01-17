@@ -1,14 +1,10 @@
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
+.svn
 
-pids
-logs
-results
+.buildpath
+.idea
+.project
+.pwd
 
-npm-debug.log
+/var/cache
+/var/log
+/public_html/media/imgcache/
