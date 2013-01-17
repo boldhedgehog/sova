@@ -1,0 +1,85 @@
+php_value display_errors 1
+#php_value error_reporting 2039
+
+AddDefaultCharset utf-8
+
+Options +FollowSymLinks
+RewriteEngine on
+
+RewriteBase /sova
+
+#redirect from old site to new
+RewriteCond %{HTTP_HOST} sova-server\.in\.ua
+RewriteRule ^(.*)$ https://sova-monitor.net/sova/$1 [L,R=301]
+
+############################################
+## workaround for HTTP authorization
+## in CGI environment
+
+RewriteCond %{HTTP:Authorization} !^$
+RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]
+
+############################################
+## always send 404 on missing files in these folders
+
+RewriteCond %{REQUEST_URI} !^/(skin|js)/
+
+############################################
+## never rewrite for existing files, directories and links
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+
+############################################
+## rewrite everything else to index.php
+
+    RewriteRule .* index.php [L]
+
+#RewriteRule ^([A-Za-z]+)/([A-Za-z]+)/number/([0-9]+)$ index.php?page=$1&action=$2&number=$3
+#RewriteRule ^([A-Za-z0-9]+)/([A-Za-z0-9]+)/id/(.*)$ index.php?page=$1&action=$2&id=$3
+#RewriteRule ^([A-Za-z0-9]+)/([A-Za-z0-9]+)/(.*)$ index.php?page=$1&action=$2$3
+#RewriteRule ^([A-Za-z0-9]+)/([A-Za-z0-9]+)/$ index.php?page=$1&action=$2
+#RewriteRule ^([A-Za-z0-9]+)/([A-Za-z0-9]+)$ index.php?page=$1&action=$2
+#RewriteRule ^([A-Za-z0-9]+)/id/(.*)$ index.php?page=$1&id=$2
+#RewriteRule ^([A-Za-z0-9]+)/$ index.php?page=$1
+#RewriteRule ^([A-Za-z0-9]+)$ index.php?page=$1
+
+############################################
+## enable apache served files compression
+## http://developer.yahoo.com/performance/rules.html#gzip
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript
+
+    # Netscape 4.x has some problems...
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+    # Netscape 4.06-4.08 have some more problems
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+
+    # MSIE masquerades as Netscape, but it is fine
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+    # Don't compress images
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+
+    # Make sure proxies don't deliver the wrong content
+    Header append Vary User-Agent env=!dont-vary
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+
+    ExpiresByType text/css "access plus 1 day"
+    ExpiresByType text/javascript "access plus 1 day"
+    ExpiresByType application/javascript "access plus 1 day"
+    ExpiresByType application/x-javascript "access plus 1 day"
+</IfModule>
+
+<IfModule mod_setenvif.c>
+    BrowserMatchNoCase "android|blackberry|ipad|iphone|ipod|iemobile|opera mobile|palmos|webos|googlebot-mobile|dolfin|bada" IS_MOBILE=1
+</IfModule>

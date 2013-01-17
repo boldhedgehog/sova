@@ -1,0 +1,2 @@
+#!/bin/sh
+echo "COMMAND [$(date +%s)] ACKNOWLEDGE_SVC_PROBLEM;nova;Газовая_бочка_датчик_2;1;1;1;operator1;Test\n" | unixcat /var/lib/nagios3/rw/live
