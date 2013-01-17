@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.gallery {
+    display: inline-block;
+}
+
+.gallery img {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+
+.balloon-header {
+    padding: 2px 10px 10px 0;
+}
+
+.balloon-coords:hover {
+    color: #0202ff;
+}
+
+.balloon-coords:visited {
+    color: #1a3dc1;
+}

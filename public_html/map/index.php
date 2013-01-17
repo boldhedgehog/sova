@@ -17,19 +17,24 @@ define('REQUEST_INTERVAL', 5000);
 // set include path to document root
 set_include_path(get_include_path() . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
 // include configs
-require_once('../inc/config.php');
-require_once('../inc/dbconfig.php');
-require_once('../inc/nagios.php');
+require_once('../../inc/config.php');
+require_once('../../inc/dbconfig.php');
+require_once('../../inc/nagios.php');
 
-require_once('../lib/lib.inc.php');
-require_once('../lib/functions.php');
+require_once('../../lib/lib.inc.php');
+require_once('../../lib/functions.php');
 
-require_once('../inc/autoloader.php');
+require_once('../../inc/autoloader.php');
 
-session_start();
+require_once('../../lib/xajax_core/xajax.inc.php');
+$xajax = new xajax();
+//$xajax->setFlag('debug',true);
+$xajax->configure("javascript URI", "/sova/js/");
+
+$GLOBALS["singletones"]["xajax"] = $xajax;
 
 // connect to DB
-require_once('../inc/model/db.class.php');
+require_once('../../inc/model/db.class.php');
 
 try {
 	$globalDB = new dbModel('mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => false, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
@@ -42,32 +47,19 @@ try {
 	die('DB CONNECTION FAILED IN SOVA ('. $e->getMessage() .')');
 }
 
-//print_r($_SERVER);
-//var_dump($_SESSION["operator"]);
-
-// include XAJAX library
-require_once('../lib/xajax_core/xajax.inc.php');
-$xajax = new xajax();
-//$xajax->setFlag('debug',true);
-$xajax->configure("javascript URI", "/sova/js/");
-
-$GLOBALS["singletones"]["xajax"] = $xajax;
-
 // include Templates library
-require_once('../lib/smarty/Smarty.class.php');
-require_once('../inc/lib/smarty/SovaSmarty.class.php');
-
-/** @var $smarty SovaSmarty */
+require_once('../../lib/smarty/Smarty.class.php');
+require_once('../../inc/lib/smarty/SovaSmarty.class.php');
 $smarty = new SovaSmarty();
 
 if (is_object($smarty)) {
-	$smarty->setCompileDir(CACHE_PATH . 'smarty/templates_c');
-	$smarty->setCacheDir(CACHE_PATH . 'smarty');
+	$smarty->compile_dir           = CACHE_PATH . "smarty/templates_c";
+	$smarty->cache_dir             = CACHE_PATH . "smarty";
+
+    $smarty->addPluginsDir(INC_PATH . "lib/smarty/plugins");
 
     $smarty->setTemplateDir(LAYOUT_PATH . DEFAULT_LAYOUT_NAME . "/templates")
         ->addTemplateDir(LAYOUT_PATH . BASE_LAYOUT_NAME . "/templates");
-
-    $smarty->addPluginsDir(INC_PATH . "lib/smarty/plugins");
 	
 	if (isset($_SESSION["user"])) $smarty->assign("user", $_SESSION["user"]);
 	if (isset($_SESSION["operator"])) $smarty->assign("operator", $_SESSION["operator"]);
@@ -95,6 +87,8 @@ if (isset($_SERVER['REDIRECT_URL'])) {
     }
 }
 
+$_GLOBALS['route']['page'] = 'map';
+
 /**
  *
  * This code include controller class and launch 3 methods:
@@ -103,11 +97,7 @@ if (isset($_SERVER['REDIRECT_URL'])) {
  * - postDispatch
  *
  */
-if (!isset($_SESSION["user"]) || !$_SESSION["user"]) {
-    $page = 'operator';
-    $_GLOBALS['route']['action'] = 'login';
-    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
-} elseif (isset($_GLOBALS['route']['page'])) {
+if (isset($_GLOBALS['route']['page'])) {
     $page = trim(substr($_GLOBALS['route']['page'], 0, 30));
     $page = strtolower($page);
 } else {
@@ -123,7 +113,7 @@ try {
     $controllerName = $page . 'Controller';
     
     if (!file_exists(INC_PATH . "controller/{$page}.class.php")) {
-	throw new MissingException('CRITICAL ERROR: Page not found');
+	    throw new MissingException('CRITICAL ERROR: Page not found');
     }
 
     $controller = new $controllerName();
@@ -158,8 +148,5 @@ try {
     ob_flush();
     die;
 };
-
-
-$xajax->processRequest();
 
 ob_flush();

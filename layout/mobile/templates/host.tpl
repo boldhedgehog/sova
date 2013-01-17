@@ -33,7 +33,6 @@
                     <th class="line-number nofilter">#</th>
                     <th class="time name-time">Час</th>
                     <th class="name-service_notes">Сервіс</th>
-                    <th class="state name-state">Стан</th>
                     <th class="name-plugin_output">Повідомлення</th>
                 </tr>
                 </thead>

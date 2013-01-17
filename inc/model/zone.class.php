@@ -111,10 +111,14 @@ class zoneModel extends basicModel {
         return parent::__construct($dbms);
     }
     
-    public function getByHostId($id) {
+    public function getByHostId($id, $geoOnly = false) {
         try {
+            $geoOnly = $geoOnly
+                ? " AND `{$this->alias}`.`entrance_position_longitude` IS NOT NULL
+                AND `{$this->alias}`.`entrance_position_latitude` IS NOT NULL"
+                : null;
             $rows = $this->db->fetchAll("SELECT `{$this->alias}`.* FROM `{$this->tableName}` AS `{$this->alias}`
-WHERE {$this->alias}.`host_id`= :host_id
+WHERE {$this->alias}.`host_id`= :host_id {$geoOnly}
 ORDER BY {$this->alias}.`plas_zone_id` ASC", array(":host_id" => $id), true);
         } catch (PDOException $e) {
             return $e;

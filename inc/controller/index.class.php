@@ -17,6 +17,16 @@ class indexController extends watcherController
             $this->smarty->assign("alert", $alert);
         }
 
+        if ($this->databaseHosts) {
+            $zone = new zoneModel();
+
+            array_walk($this->databaseHosts, function(& $host) use ($zone) {
+                if (isset($host['host_id'])) {
+                    $host['zones'] = $zone->getByHostId($host['host_id'], true);
+                }
+            });
+        }
+
         $content = $this->smarty->fetch("welcome.tpl");
         $this->smarty->assign('content', $content);
         $this->smarty->assign('pageTitle', '');

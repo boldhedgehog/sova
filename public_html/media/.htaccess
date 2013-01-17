@@ -1,8 +1,12 @@
+Order Allow,Deny
+Allow from all
+Satisfy any
+
 Options All -Indexes +FollowSymlinks
 <IfModule mod_php5.c>
     php_flag engine 0
 </IfModule>
-                                                                                                                                                                                                                                            
+
 AddHandler cgi-script .php .pl .py .jsp .asp .htm .shtml .sh .cgi
 Options -ExecCGI
 

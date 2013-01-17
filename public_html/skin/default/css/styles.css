@@ -306,7 +306,8 @@ li.host {
     padding: 0;
     width: 160px;
     max-height: 150px;
-    float: left;
+    /*float: left;*/
+    display: inline-block;
     background-color: #f7f9fa;
 }
 
@@ -409,19 +410,28 @@ li.service span.duration {
     color: #555;
 }
 
-.host ul.schemes li {
-    padding: 5px 0px 5px 0px;
+.host .schemes li {
     list-style: none;
+    display: inline-block;
 }
 
-.host ul.schemes li img {
-    border: 1px solid #000;
-    max-width: 975px;
+.host .schemes h3 {
+    display: none;
 }
 
-div.host ul.services { width: 387px; float: left; margin-right: 2px; }
+.host .schemes a {
+    display: block;
+}
 
-div.host a.host-map {
+.host .schemes img {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    max-width: 256px;
+}
+
+.host ul.services { width: 387px; float: left; margin-right: 2px; }
+
+.host a.host-map {
     display: block;
 }
 

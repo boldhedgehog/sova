@@ -3,15 +3,17 @@
 
     var myMap = null;
     function initYMap() {
-        var myCollection = new ymaps.GeoObjectCollection();
+        var cluster = new ymaps.Clusterer();
+
         var center = null;
+
         {foreach from=$host.zones item=item name=current}
             {if $item.entrance_position_longitude && $item.entrance_position_latitude}
-                center = [{$item.entrance_position_longitude}, {$item.entrance_position_latitude}];
-                myCollection.add( new ymaps.GeoObject({
+                center = [{$item.entrance_position_latitude}, {$item.entrance_position_longitude}];
+                cluster.add( new ymaps.GeoObject({
                     geometry: {
                         type: "Point",
-                        coordinates: [{$item.entrance_position_longitude}, {$item.entrance_position_latitude}]
+                        coordinates: [{$item.entrance_position_latitude}, {$item.entrance_position_longitude}]
                     },
                     properties: {
                         hintContent: "{$item.name}"
@@ -28,20 +30,21 @@
 
         myMap = new ymaps.Map("YMapsID", {
             center: center,
-            zoom: 15
+            zoom: 14,
+            {if $smarty.const.DEFAULT_LAYOUT_NAME eq "mobile"}
+            {else}
+            behaviors: ["drag", "dblClickZoom", "scrollZoom"]
+            {/if}
         });
+
         myMap.controls.add('zoomControl');
         myMap.controls.add('typeSelector');
         myMap.controls.add('mapTools');
         myMap.controls.add('scaleLine');
 
-        myMap.geoObjects.add(myCollection);
+        myMap.geoObjects.add(cluster);
 
-        var myClusterer = new ymaps.Clusterer();
-
-        myMap.geoObjects.add(myClusterer);
-
-        initTabs();
+        //initTabs();
     }
 </script>
 
@@ -56,9 +59,13 @@
 
     $(document).ready(function(){
 
-        if ("undefined" == typeof(myMap)) {
+        //if ("undefined" == typeof(myMap)) {
             initTabs();
-        }
+        //}
+
+        $hostTabs.bind('tabsshow', function (event, ui) {
+            myMap.container.fitToViewport();
+        });
 
         initServiceLinks();
         initTableSearch('table.log', { searchFunction: xajax_{$controllerName}.xajaxGetLogRows });
