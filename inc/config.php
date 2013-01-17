@@ -9,7 +9,7 @@ define('SOVA_VERSION', '0.7.1');
 
 date_default_timezone_set('Europe/Kiev');
 
-if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+/*if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     if (isset($_REQUEST['debug_use_proxy'])) {
         if ($_REQUEST['debug_use_proxy'] == 'on') {
             $ip_idx = 1;
@@ -21,7 +21,7 @@ if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     }
     $address = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
     $_SERVER['REMOTE_ADDR'] = $address[$ip_idx];
-}
+}*/
 
 define('SITE_NAME', 'Інтелект');
 
@@ -43,6 +43,8 @@ define('LAYOUT_PATH', SITE_ROOT . '../layout/');
 /**
  * Layout switcher
  */
+define('BASE_LAYOUT_NAME', 'default');
+
 if (isset($_SERVER['IS_MOBILE']) && $_SERVER['IS_MOBILE'] ||
     isset($_COOKIE['IS_MOBILE']) && $_COOKIE['IS_MOBILE']) {
     define('DEFAULT_LAYOUT_NAME', 'mobile');
@@ -77,6 +79,7 @@ define ('SOVA_COOKIE_PATH','/sova/');
 define ('SOVA_COOKIE_DOMAIN',$_SERVER['HTTP_HOST']);
 
 session_set_cookie_params(0,SOVA_COOKIE_PATH,((false === strpos(SOVA_COOKIE_DOMAIN,'.'))?null:SOVA_COOKIE_DOMAIN));
+session_name('sova-fe');
 
 define('DATE_SOVA', 'Y-m-d');
 define('DATE_SOVA_TIME', 'H:i:s');
@@ -86,5 +89,6 @@ define('LAYOUT_IMAGES_URL', SOVA_BASE_URL . 'skin/' . DEFAULT_LAYOUT_NAME .'/ima
 define('LAYOUT_LOGOS_URL', SOVA_BASE_URL . 'skin/' . DEFAULT_LAYOUT_NAME .'/images/logos/');
 define('LAYOUT_CSS_URL', SOVA_BASE_URL . 'skin/' . DEFAULT_LAYOUT_NAME .'/css/');
 
-$GLOBALS["IMAGEMODIFIER_CHAINS"]["scheme640"] = array(array("resize", array("width" => 640)));
+$GLOBALS["IMAGEMODIFIER_CHAINS"]["host-scheme-thumb"] = array(array("resize", array("width" => 256)));
 $GLOBALS["IMAGEMODIFIER_CHAINS"]["scheme_mobile"] = array(array("resize", array("width" => 290)));
+$GLOBALS["IMAGEMODIFIER_CHAINS"]["host-scheme-ymap"] = array(array("resize", array("width" => 128, "height" => 128)));

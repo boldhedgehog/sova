@@ -79,6 +79,14 @@ class mklivestatusModel extends basicModel
         $this->_connectToSocket();
     }
 
+    public function __destruct()
+    {
+        if (is_resource($this->socket)) {
+            socket_close($this->socket);
+            //socket_get_status()
+        }
+    }
+
     public function getContacts()
     {
         return $this->_executeQuery("GET contacts");
@@ -171,17 +179,17 @@ class mklivestatusModel extends basicModel
             // get services for this host
             if ($loadServices) {
                 $services = $this->_executeQuery("GET services\nColumns: $this->commonServiceColumns\nFilter: host_name = {$host["name"]}");
-                foreach ($hosts[$key]["services"] as $servicekey => $service) {
-                    $services[$servicekey]["md5"] = hashKey($services[$servicekey]["host_name"] . $services[$servicekey]["description"]);
-                    if ($service == $services[$servicekey]["description"]) {
-                        unset($hosts[$key]["services"][$servicekey]);
-                        $hosts[$key]["services"][$services[$servicekey]["md5"]] = $services[$servicekey];
+                foreach ($hosts[$key]["services"] as $serviceKey => $service) {
+                    $services[$serviceKey]["md5"] = hashKey($services[$serviceKey]["host_name"] . $services[$serviceKey]["description"]);
+                    if ($service == $services[$serviceKey]["description"]) {
+                        unset($hosts[$key]["services"][$serviceKey]);
+                        $hosts[$key]["services"][$services[$serviceKey]["md5"]] = $services[$serviceKey];
                     }
                 }
             } elseif (isset($host['services_with_state']) && $host['services_with_state']) {
                 // TODO: Move to a separate method
                 $services = array();
-                foreach ($host['services_with_state'] as $servicekey => $service) {
+                foreach ($host['services_with_state'] as $service) {
                     $md5 = hashKey($host['name'] . $service[0]);
                     $services[$md5] = array(
                         'service_description' => $service[0],
@@ -288,6 +296,11 @@ class mklivestatusModel extends basicModel
 
     protected function _connectToSocket()
     {
+        // already connected
+        if (is_resource($this->socket)) {
+            return $this->socket;
+        }
+
         list($address, $port) = explode(':', MKLIVE_SOCKET_ADDRESS);
         $this->socket = ($port) ? socket_create(AF_INET, SOCK_STREAM, SOL_TCP) : socket_create(AF_UNIX, SOCK_STREAM, 0);
         if (!$this->socket)

@@ -133,7 +133,7 @@ class basicModel
 
     public function _postProcess(&$result)
     {
-        $joins = array_merge($this->joinsBase, $this->joins);
+        //$joins = array_merge($this->joinsBase, $this->joins);
 
         foreach ($result as $key => $row) {
             foreach ($row as $field => $value) {
@@ -170,18 +170,30 @@ class basicModel
         }
 
         foreach ($this->filters as $key => $filter) {
+            $field = $filter["field"];
+
+            if (strpos($field, '.')) {
+                list($alias, $field) = explode('.', $field, 2);
+            } else {
+                $alias = $this->alias;
+            }
+
             if (is_array($filter['value']) && strtolower($filter['op']) == 'in') {
                 $placeholderArray = array();
                 foreach ($filter['value'] as $index => $value) {
-                    $placeholder = $filter["field"] . md5($key) . "_{$index}";
+                    $placeholder = $field . hashKey($key) . "_{$index}";
                     $bindings[":{$placeholder}"] = $value;
                     $placeholderArray[] = ":{$placeholder}";
                 }
-                $filterCopy[] = "`$this->alias`.`{$filter["field"]}` IN (" . implode(',', $placeholderArray) . ")";
+                $filterCopy[] = "`$alias`.`$field` IN (" . implode(',', $placeholderArray) . ")";
+            } elseif (strtolower($filter['op']) == 'not null') {
+                $filterCopy[] = "`$alias`.`$field` IS NOT NULL";
+            } elseif (strtolower($filter['op']) == 'null') {
+                $filterCopy[] = "`$alias`.`$field` IS NULL";
             } else {
-                $placeholder = $filter["field"] . md5($key);
+                $placeholder = $field . hashKey($key);
                 $bindings[":{$placeholder}"] = $filter["value"];
-                $filterCopy[] = "`$this->alias`.`{$filter["field"]}` {$filter["op"]} :{$placeholder}";
+                $filterCopy[] = "`$alias`.`$field` {$filter["op"]} :{$placeholder}";
             }
         }
 

@@ -14,6 +14,7 @@ abstract class watcherController extends basicController
 
     protected $services = array();
     protected $hosts = array();
+    protected $databaseHosts = array();
 
     protected $overview = array();
 
@@ -40,11 +41,11 @@ abstract class watcherController extends basicController
         $this->smarty->assignByRef("overview", $this->overview);
 
         // get all
-        $hosts = $this->livestatusModel->getHosts();
+        $this->databaseHosts = $this->livestatusModel->getHosts();
 
-        if ($hosts) {
+        if ($this->databaseHosts) {
             $allowedHosts = array();
-            foreach ($hosts as $host) {
+            foreach ($this->databaseHosts as $host) {
                 $allowedHosts[] = $host['name'];
             }
 
@@ -52,18 +53,18 @@ abstract class watcherController extends basicController
 
             $hostModel = new hostModel();
             $hostModel->setFilter('nagios_name', 'in', $allowedHosts);
-            $hosts = $hostModel->getAll();
+            $this->databaseHosts = $hostModel->getAll();
         } else {
-            $hosts = array();
+            $this->databaseHosts = array();
         }
 
         foreach ($this->overview as $key => $value) {
-            if (isset($hosts[$key])) {
-                $this->overview[$key]['db_data'] = $hosts[$key];
+            if (isset($this->databaseHosts[$key])) {
+                $this->overview[$key]['db_data'] = $this->databaseHosts[$key];
             }
         }
 
-        $this->smarty->assignByRef('database_hosts', $hosts);
+        $this->smarty->assignByRef('database_hosts', $this->databaseHosts);
     }
 
     /**

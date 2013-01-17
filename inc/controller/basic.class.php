@@ -261,7 +261,9 @@ class basicController
 
     public static function clearSessionNotifications()
     {
-        unset($_SESSION["sova"]["alerts"]);
+        if (isset($_SESSION["sova"]["alerts"])) {
+            unset($_SESSION["sova"]["alerts"]);
+        }
     }
 
     public static function redirect($url)

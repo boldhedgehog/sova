@@ -8,6 +8,8 @@
 
     <link rel="stylesheet" href="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.DEFAULT_LAYOUT_NAME}/css/styles.css" type="text/css" />
 
+    <link rel="stylesheet" href="{$smarty.const.SOVA_BASE_URL}js/fancybox2/jquery.fancybox.css?v=2.1.3" type="text/css" media="screen" />
+
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/json/json2.js"></script>
 
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/jquery-1.8.2.js"></script>
@@ -15,6 +17,9 @@
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/jquery/jquery.jeditable.js"></script>
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/jquery/jquery-ui-1.9.0.custom.min.js"></script>
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/jquery/i18n/jquery-ui-i18n.min.js"></script>
+
+    <!-- Add fancyBox -->
+    <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/fancybox2/jquery.fancybox.pack.js?v=2.1.3"></script>
 
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js"></script>
 

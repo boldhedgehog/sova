@@ -10,7 +10,6 @@
     <td class="line-number">{$smarty.foreach.log.iteration}</td>
     <td class="time">{$log.time|date_format:'%Y-%m-%d %H:%M:%S'}</td>
     <td>{if $log.service_notes}{$log.service_notes|escape}{else}{$log.service_description|escape}{/if}</td>
-    <td class="state">{$log.state_text}</td>
     <td>{$log.plugin_output|escape}</td>
 </tr>
 {foreachelse}
