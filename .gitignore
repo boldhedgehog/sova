@@ -5,6 +5,8 @@
 .project
 .pwd
 
+logs
+
 /inc/dbconfig.php
 
 /var/cache
