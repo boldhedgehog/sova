@@ -5,6 +5,8 @@
 .project
 .pwd
 
+/inc/dbconfig.php
+
 /var/cache
 /var/log
 /public_html/media/imgcache/
