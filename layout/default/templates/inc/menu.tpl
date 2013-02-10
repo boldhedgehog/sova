@@ -40,7 +40,7 @@
                         <li class="separator"><span>&nbsp;</span></li>
                     {/if}
 	    <li id="hostNav{$hostItem.md5}" class="hostNav{if isset($host) && isset($host.nagios.md5) && $hostItem.md5 eq $host.nagios.md5} active{/if}  {if isset($hostItem['db_data']) && $hostItem.db_data.is_on_service}on-service{else}not-on-service{/if}">
-		<a href="{$smarty.const.SOVA_BASE_URL}host/index/id/{$hostItem.name|escape:"url"}" class="hostLinkOuter"><span>{if isset($hostItem['db_data']) && $hostItem.db_data.host_id}{$hostItem.db_data.alias}{else}{$hostItem.alias}{/if}</span></a>
+		<a href="{$smarty.const.SOVA_BASE_URL}host/index/id/{$hostItem.name|escape:"url"}" class="hostLinkOuter">{if isset($hostItem['db_data']) && $hostItem.db_data.host_id}{$hostItem.db_data.alias}{else}{$hostItem.alias}{/if}</a>
 	    </li>
                     {assign var='old_host_is_on_service' value=$host_is_on_service}
 		{/if}

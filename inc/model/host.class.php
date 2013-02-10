@@ -59,6 +59,7 @@ class hostModel extends nagiosObjectModel
         //$this->addField(new hostCentralAuthority($this));
         //$this->addField(new hostLocalAuthority($this));
         $this->addField(new hostPassport($this));
+        $this->addField(new hostConfigInfo($this));
 
         return parent::__construct($dbms);
     }

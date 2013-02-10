@@ -201,7 +201,7 @@ span.caption-1, td.caption-1 { background-color: #aaa; }
 
 #leftnav ul.tabs li {
     float: left;
-    padding: 5px 0px 5px 0px;
+    padding: 5px 0;
     list-style: none;
     font-weight: bold;
     font-size: 16px;
@@ -308,6 +308,7 @@ li.host {
     max-height: 150px;
     /*float: left;*/
     display: inline-block;
+    vertical-align: top;
     background-color: #f7f9fa;
 }
 
