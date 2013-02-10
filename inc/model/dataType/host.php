@@ -131,3 +131,8 @@ class hostPassport extends stringDatatype
 {
     protected $name = "passport";
 }
+
+class hostConfigInfo extends textDatatype
+{
+    protected $name = "config_info";
+}

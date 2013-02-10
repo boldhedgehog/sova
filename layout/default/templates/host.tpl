@@ -59,12 +59,12 @@
 
     $(document).ready(function(){
 
-        //if ("undefined" == typeof(myMap)) {
-            initTabs();
-        //}
+        initTabs();
 
         $hostTabs.bind('tabsshow', function (event, ui) {
-            myMap.container.fitToViewport();
+            if (typeof(myMap) == 'function') {
+                myMap.container.fitToViewport();
+            }
         });
 
         initServiceLinks();
@@ -288,6 +288,14 @@
                     <td><textarea id="host_description" rows="7" cols="20"
                                   readonly="readonly">{$host.description}</textarea></td>
                 </tr>
+            {if $host['config_info']}
+                <tr>
+                    <td><label for="config_info">Завдання</label></td>
+                </tr>
+                <tr>
+                    <td><div id="config_info" class="textarea ui-resizable">{$host['config_info']}</div></td>
+                </tr>
+            {/if}
             {if $host['passport']}
                 <tr>
                     <td><label for="passport">Паспорт</label></td>
