@@ -1,5 +1,4 @@
 {assign var=logItems value=$logItems|default:$nagiosObject.nagiosLog}
-{*<pre>{$logItems|@var_dump}</pre>*}
 {*if $append}
 <tr>
 <th colspan="4" class="time-delimiter">{$fromTime|date_format:'%Y-%m-%d'}</th>

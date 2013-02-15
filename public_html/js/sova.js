@@ -942,7 +942,9 @@ function initTableSearch(tableId, settings) {
             var table = $(this).data('table');
             var filter = table.data('filter');
             $.cookie('logfilter' + table.attr('id'), JSON.stringify(filter));
+            $(this).prop('disabled', true);
             table.data('settings').searchFunction(filter);
+            $(this).prop('disabled', false);
         });
 }
 
@@ -959,23 +961,38 @@ function applyFilters(tableId) {
 function highlightZone(object, highlight) {
     var className = object.className.split(' ');
     var id = '';
+    var communicationDeviceId = '';
+
+    var i;
     
-    $.each(className, function () {
-        if (this.indexOf('zone-row-id-') != -1) {
-            id = this.replace('zone-row-id-', '');
-            return;
-	}
-    });
-    
-    if (!id) {
-        return;
+    for (i=0; i<className.length; i++) {
+        if (className[i].indexOf('zone-row-id-') != -1) {
+            id = className[i].replace('zone-row-id-', '');
+        }
+        if (className[i].indexOf('zone-row-device-') != -1) {
+            communicationDeviceId = className[i].replace('zone-row-device-', '');
+        }
+        if (id && communicationDeviceId) {
+            break;
+        }
     }
-    
-    if (highlight) {
-        $('tr.zone-row-id-' + id).addClass('zone-highlight');
-    } else {
-        $('tr.zone-row-id-' + id).removeClass('zone-highlight');
+
+    if (id) {
+        if (highlight) {
+            $('.zone-row-id-' + id).addClass('zone-highlight');
+        } else {
+            $('.zone-row-id-' + id).removeClass('zone-highlight');
+        }
     }
+
+    if (communicationDeviceId) {
+        if (highlight) {
+            $('.zone-row-device-' + communicationDeviceId).addClass('zone-highlight-device');
+        } else {
+            $('.zone-row-device-' + communicationDeviceId).removeClass('zone-highlight-device');
+        }
+    }
+
 }
 
 function initStatusBar() {

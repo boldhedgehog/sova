@@ -88,7 +88,6 @@
     /* ]]> */
 </script>
 <!-- {*include file="inc/host_log_chart.tpl"*} -->
-<!-- {*$host|@var_dump*} -->
 <div id="host{$host.host_id}" class="host">
     <div class="tabs">
         <ul>
@@ -377,7 +376,6 @@
         </div>
     {/if}
         <div class="details" id="log">
-        {*$host.nagiosLog|@var_dump*}
             <table id="hostLog" class="grid log">
                 <thead>
                 <tr>
@@ -400,6 +398,9 @@
                     </td>
                 </tr>
             </table>
+            <span class="please-wait" id="log-please-wait" style="display:none;">
+                <img src="{$smarty.const.LAYOUT_IMAGES_URL}ajax-loader.gif" alt="Зачекайте, будь ласка ..." title="Зачекайте, будь ласка ..." class="v-middle" /> Зачекайте будь, ласка ...
+            </span>
         </div>
         <div class="details" id="ymap">
             <div id="YMapsID" style="height: 600px"></div>
