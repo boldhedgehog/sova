@@ -62,7 +62,7 @@
         initTabs();
 
         $hostTabs.bind('tabsshow', function (event, ui) {
-            if (typeof(myMap) == 'function') {
+            if (typeof(myMap) != 'undefined') {
                 myMap.container.fitToViewport();
             }
         });
