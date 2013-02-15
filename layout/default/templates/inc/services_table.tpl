@@ -1,4 +1,3 @@
-{*assign var=services value=$host.services*}
 {assign var=nagiosServices value=$host.nagios.services}
 <table class="grid services" id="services{$host.nagios.md5}">
     {*if !$isAjax*}
@@ -11,10 +10,6 @@
         <th><span>Назва</span></th>
 	    <th class="state"><span>Стан</span></th>
 	    <th><span>Повідомлення</span></th>
-        {*
-	    <th class="time nofilter">Останнє оновлення</th>
-	    <th class="time nofilter">Остання зміна статусу</th>
-	    *}
         <th class="time nofilter" title="Тривалість">Тр-ть</th>
 	</tr>
     </thead>
@@ -54,9 +49,15 @@
         {/if}
             
         <tr onmouseover="highlightZone(this, true)" onmouseout="highlightZone(this, false)"
-	    id="service{$service.md5}" class="state{$service.state}{if $smarty.foreach.services.first} first{elseif $smarty.foreach.services.last} last{/if} zone-row-id-{$dbService.zone.zone_id}{if $zone_row_type == "new"} zone-row-start{elseif $zone_row_type == "continue"} zone-row-continue{/if}">
+	    id="service{$service.md5}"
+        class="state{$service.state}
+        {if $smarty.foreach.services.first} first{elseif $smarty.foreach.services.last} last{/if}
+        zone-row-id-{$dbService.zone.zone_id}{if $zone_row_type == "new"}
+        zone-row-start{elseif $zone_row_type == "continue"} zone-row-continue{/if}
+        {if $dbService.communication_device_id}zone-row-device-{$dbService.communication_device_id|escape}{/if}
+        ">
             {if $zone_row_type == "new"}
-                <td class="zone-header first" title="{$dbService.zone.name|escape}"><h4><span class="zone-id">{$dbService.zone.name|escape}</span></h4></td>
+                <td class="zone-header first zone-id" title="{$dbService.zone.name|escape}">{$dbService.zone.name|escape}</td>
             {elseif $zone_row_type == "continue"}
                 <td class="zone-continue first" title="{$dbService.zone.name|escape}">-//-</td>
             {else}
@@ -65,21 +66,17 @@
             <td class="service-type service-type-{if $serviceType}{$serviceType|escape}{else}unknown{/if}">{if $serviceType eq "sensor"}ДТ{elseif $serviceType eq "service"}СЛ{elseif $serviceType eq "button"}СК{else}--{/if}</td>
             <td>{if $dbService.communication_device.logical_number}{$dbService.communication_device.logical_number}/{/if}{$dbService.position}</td>
             <td>
-                {if $dbService && (!isset($nolinks)|| !$nolinks)}<a href="{$smarty.const.SOVA_BASE_URL}service/index/id/{$host.host_id}:{$service.description|escape:"url"}" title="{$serviceName|escape}" class="serviceLink{if $dbService.type eq 'service'} service{/if}">{/if}<span id="service[{$host.host_id}:{$service.description|escape:"javascript"}]">{$serviceName}</span>{if $dbService && (!isset($nolinks) || !$nolinks)}</a>{/if}
+                {if $dbService && (!isset($nolinks)|| !$nolinks)}<a href="{$smarty.const.SOVA_BASE_URL}service/index/id/{$host.host_id}:{$service.description|escape:"url"}" class="serviceLink{if $dbService.type eq 'service'} service{/if}">{/if}{$serviceName}{if $dbService && (!isset($nolinks) || !$nolinks)}</a>{/if}
             </td>
             <td>{if $dbService.alias}{$dbService.alias|escape}{else}&nbsp;{/if}</td>
             <td class="state bgServiceState{$service.state}">{$service.state_text}
-        	<div class="serviceImages">
-                    <img class="imgAcknowleged{if $service.acknowledged != 1} hidden{/if}" src="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.LAYOUT_NAME}/images/ack.gif" alt="ОБР" title="Сервіс в обробці"/>
-                    <img class="imgComments{if not $service.comments} hidden{/if}" src="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.LAYOUT_NAME}/images/comment.gif" alt="КОМ" title="Коментарі: {$service.comments|@count}"/>
-                    <img class="imgFlapping{if not $service.is_flapping} hidden{/if}" src="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.LAYOUT_NAME}/images/flapping.gif" alt="МЕР" title="Мерехтіння"/>
+        	    <div class="serviceImages">
+                    <img class="imgAcknowleged{if $service.acknowledged != 1} hidden{/if}" src="{$smarty.const.LAYOUT_IMAGES_URL}ack.gif" alt="ОБР" title="Сервіс в обробці"/>
+                    <img class="imgComments{if not $service.comments} hidden{/if}" src="{$smarty.const.LAYOUT_IMAGES_URL}comment.gif" alt="КОМ" title="Коментарі: {$service.comments|@count}"/>
+                    <img class="imgFlapping{if not $service.is_flapping} hidden{/if}" src="{$smarty.const.LAYOUT_IMAGES_URL}flapping.gif" alt="МЕР" title="Мерехтіння"/>
                 </div>
             </td>
             <td>{$service.plugin_output|escape}</td>
-            {*
-            <td class="time">{$service.last_check|date_format:'%Y-%m-%d %H:%M:%S'}</td>
-            <td class="time">{$service.last_state_change|date_format:'%Y-%m-%d %H:%M:%S'}</td>
-            *}
             <td class="last">{if isset($service['state_duration'])}<span title="{$service.state_duration|human_interval}">{$service.state_duration|human_interval:true}</span>{else}&nbsp;{/if}</td>
         </tr>
         {assign var=_old_zone_id value=$dbService.zone_id}

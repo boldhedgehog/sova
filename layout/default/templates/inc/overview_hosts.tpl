@@ -5,7 +5,6 @@
 {if (!isset($host['db_data']) && !$is_on_service) || (isset($host['db_data']) && $host.db_data.is_on_service neq $is_on_service)}
     {continue}
 {/if}
-{*$host|@var_dump*}
 {if !$operation && isset($host.IS_STOROZH) && $host.IS_STOROZH || $operation && (!isset($host.IS_STOROZH) || !$host.IS_STOROZH)}
     <li id="host{$host.md5}" class="host {if isset($host['db_data']) && $host.db_data.is_on_service}on-service{else}not-on-service{/if}">
         <div class="hosticonContainer">

@@ -7,7 +7,6 @@
     //]]>
     </script>
     {foreach from=$nagvisServices item=service key=service_key}
-    <!-- {*$service|@var_dump*} -->
         {if !isset($service['md5']) or !isset($services[$service.md5])}
             {continue}
         {/if}
@@ -15,7 +14,6 @@
         {if $nagios_service}
             {assign var=dbService value=$nagios_service.db_data}
             {if $dbService}
-                <!-- {$dbService|@var_dump} -->
                 {if $dbService.sensor_type.name}
                     {assign var=serviceName value=$dbService.position|cat:":"|cat:$dbService.sensor_type.name}
                 {else}
@@ -35,7 +33,6 @@
                 <img src="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.DEFAULT_LAYOUT_NAME}/images/icons/service{$nagios_service.state}.png" alt="{$nagios_service.notes_expanded}" class="serviceIcon"/>
                 {if $dbService && (!isset($nolinks) || !$nolinks)}</a>{/if}
                 <div class="serviceFloat">
-                <!-- {*$nagios_service|@var_dump*} -->
                 <table cellspacing="0" cellpadding="1" border="1">
                     <tr><th colspan="2">{$serviceName|escape}</th></tr>
                     {if isset($dbService['zone']['name'])}<tr><th colspan="2">{$dbService['zone']['name']|escape}</th></tr>{/if}
