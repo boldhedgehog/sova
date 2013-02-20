@@ -79,6 +79,8 @@
         {if !isset($host.scheme_image_name) || not $host.scheme_image_name}$hostTabs.tabs('disable', 'schemes');{/if}
 
         {if !($host.zones && isset($host['has_geo']) && $host.has_geo)}$hostTabs.tabs('disable', 'ymap');{/if}
+
+        {if !isset($host.config_info) || not $host.config_info}$hostTabs.tabs('disable', 'configinfo');{/if}
     }
 
     //$(window).load(function() {
@@ -98,6 +100,7 @@
             <li><a href="#map">Схема</a></li>
             <li><a href="#schemes">Галерея</a></li>
             <li><a href="#ymap">Мапа</a></li>
+            <li><a href="#configinfo">Завдання</a></li>
         </ul>
         <div class="details" id="details">
             <table>
@@ -404,6 +407,11 @@
         </div>
         <div class="details" id="ymap">
             <div id="YMapsID" style="height: 600px"></div>
+        </div>
+        <div class="details" id="configinfo">
+            <div>
+            {$host.config_info}
+            </div>
         </div>
     </div>
 </div>

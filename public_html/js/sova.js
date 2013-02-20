@@ -32,7 +32,7 @@ nagiosWatcher.assignWatcherController = function(controller) {
     /*
      * TODO: use jQuery AJAX
     nagiosWatcher.watcherController.ajaxGetService = function (key) {
-        
+
     }*/
 };
 
@@ -788,7 +788,7 @@ function initTableFilter(tableId) {
                             .find('span')
                             .css('display', 'inline');
                     }
-                    
+
                     $(this).data('table')
                         .data('filter', {})
                         .setFilter('f' + index, $(this).val());
@@ -807,7 +807,7 @@ function initTableFilter(tableId) {
                     $(this).data('oldValue', $(this).val());
                 });
         }
-        
+
         $(this).find('span').click(function() {
             var el = document.getElementById(controlId);
             if (el) {
@@ -903,7 +903,7 @@ function initTableSearch(tableId, settings) {
                 filterCell.addClass('filter-time');
                 var options = {
                         showOtherMonths: true,
-			            selectOtherMonths: true,
+                        selectOtherMonths: true,
                         changeMonth: true,
                         changeYear: true,
                         onSelect: function(dateText, inst) {
@@ -943,6 +943,7 @@ function initTableSearch(tableId, settings) {
             var filter = table.data('filter');
             $.cookie('logfilter' + table.attr('id'), JSON.stringify(filter));
             $(this).prop('disabled', true);
+            //$('#log-please-wait').css('display','block');
             table.data('settings').searchFunction(filter);
             $(this).prop('disabled', false);
         });
@@ -964,7 +965,7 @@ function highlightZone(object, highlight) {
     var communicationDeviceId = '';
 
     var i;
-    
+
     for (i=0; i<className.length; i++) {
         if (className[i].indexOf('zone-row-id-') != -1) {
             id = className[i].replace('zone-row-id-', '');
