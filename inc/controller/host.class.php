@@ -174,6 +174,35 @@ class hostController extends watcherController
         return $this->objResponse;
     }
 
+    public function getLogRowsAction()
+    {
+        $filter = $this->_setLogFilterDefaults($_POST);
+
+        // update services map overlay
+        $id = $_REQUEST['id'];
+
+        // try to get host from DB
+        /* @var $host hostModel */
+        $host = (is_numeric($id)) ? $this->hostModel->load($id) : $this->hostModel->loadByNagiosName($id);
+
+        if ($host->getId()) {
+            $this->smarty->assign('nagiosObject', $host->loadNagiosLog($filter)->getData());
+
+            $html = $this->smarty->fetch('inc/log.tpl');
+
+            echo json_encode(
+                array(
+                    'response' => $html
+                )
+            );
+
+            //$this->objResponse->script("$('table.log tbody').html('" . self::jsEscapeString($html) . "')");
+        } else {
+            self::httpError(404);
+            die;
+        }
+    }
+
     public function importAction()
     {
         $data = $this->livestatusModel->getHostsFull();

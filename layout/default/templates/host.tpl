@@ -59,6 +59,8 @@
 
     $(document).ready(function(){
 
+        nagiosWatcher.data.hostId = hostId;
+
         initTabs();
 
         $hostTabs.bind('tabsshow', function (event, ui) {
@@ -68,7 +70,8 @@
         });
 
         initServiceLinks();
-        initTableSearch('table.log', { searchFunction: xajax_{$controllerName}.xajaxGetLogRows });
+        //initTableSearch('table.log', { searchFunction: xajax_{$controllerName}.xajaxGetLogRows });
+        initTableSearch('table.log', { searchFunction: nagiosWatcher.getHostLogRows });
         initTableFilter('table.services');
     });
 
@@ -402,7 +405,7 @@
                 </tr>
             </table>
             <span class="please-wait" id="log-please-wait" style="display:none;">
-                <img src="{$smarty.const.LAYOUT_IMAGES_URL}ajax-loader.gif" alt="Зачекайте, будь ласка ..." title="Зачекайте, будь ласка ..." class="v-middle" /> Зачекайте будь, ласка ...
+                <img src="{$smarty.const.LAYOUT_IMAGES_URL}ajax-loader.gif" alt="Зачекайте, будь ласка ..." title="Зачекайте, будь ласка ..." class="v-middle" /> Зачекайте, будь ласка ...
             </span>
         </div>
         <div class="details" id="ymap">

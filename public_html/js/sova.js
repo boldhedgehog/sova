@@ -1,8 +1,12 @@
 if ('undefined' == typeof(nagiosWatcher)) {
     nagiosWatcher = {
-        data : {},
+        data : {
+            hostId: null
+        },
         services : {},
         watcherController : null,
+        url : location.href,
+        baseUrl: null,
 
         sovaInterval : null,
         sovaIntervalFull : null,
@@ -20,6 +24,29 @@ if ('undefined' == typeof(nagiosWatcher)) {
                 window.clearInterval(this.sovaInterval);
                 this.sovaInterval = null;
             }
+        },
+        getHostLogRows : function (filter, button) {
+            console.log(this);
+            jQuery.ajax(
+                nagiosWatcher.baseUrl + 'host/getLogRows/id/' + nagiosWatcher.data.hostId,
+                {
+                    type: "POST",
+                    dataType: "json",
+                    beforeSend: function() {
+                        $('#log-please-wait').css('display','block');
+                        button.prop('disabled', true);
+                    },
+                    complete: function() {
+                        $('#log-please-wait').css('display','none');
+                        button.prop('disabled', false);
+                    },
+                    success: function(xhr) {
+                        $('table.log tbody').html(xhr.response);
+                    },
+                    cache: false,
+                    data: filter
+                }
+            );
         }
     };
 }
@@ -669,43 +696,6 @@ function getCenterCoordinates(width, height, offset) {
     };
 })(jQuery);
 
-/*function initTableFilter(tableId) {
-    $(tableId + ' thead th').each(function(index) {
-        if ($(this).is('.nofilter')) {
-            return true;
-        }
-        var headers = $(tableId + ' thead');
-        if ($(this).is('.state')) {
-            $(this).append('<select class="filter" id="filter' + $(tableId).attr('id') + index + '"><option/><option value="OK">OK</option><option value="WARNING">WARNING</option><option value="CRITICAL">CRITICAL</option><option value="UNKNOWN">UNKNOWN</option></select>')
-                .find('select')
-                .attr('column-index', index)
-                .change(function() {
-                    headers.find('.filter[column-index!=' + $(this).attr('column-index') + ']').val('');
-                    $(tableId).columnfilter($(this));
-                });
-        } else {
-            $(this).append('<input class="filter" id="filter' + $(tableId).attr('id') + index + '"/>')
-                .find('input')
-                .attr('column-index', index)
-                .data('oldValue', '')
-                .keyup(function() {
-                    if ($(this).data('oldValue') == $(this).val()) {
-                        return;
-                    }
-
-                    headers.find('.filter[column-index!=' + index + ']').val('');
-
-                    clearTimeout($(this).data('timeout'));
-                    $(this).data('timeout', setTimeout('$("' + tableId + '").columnfilter("' + $(this).val() + '", ' + index + ')', 500));
-                    //$("table.log").columnfilter($(this).val(), index);
-
-                    $(this).data('oldValue', $(this).val());
-                });
-        }
-
-    });
-}*/
-
 function initTableFilter(tableId) {
     var table = $(tableId).data('filter',{});
     
@@ -942,10 +932,7 @@ function initTableSearch(tableId, settings) {
             var table = $(this).data('table');
             var filter = table.data('filter');
             $.cookie('logfilter' + table.attr('id'), JSON.stringify(filter));
-            $(this).prop('disabled', true);
-            //$('#log-please-wait').css('display','block');
-            table.data('settings').searchFunction(filter);
-            $(this).prop('disabled', false);
+            table.data('settings').searchFunction(filter, $(this));
         });
 }
 

@@ -30,6 +30,7 @@
 	$(document).ready(function() {
 		nagiosWatcher.assignWatcherController(xajax_{$controllerName});
 		nagiosWatcher.startAlertsWatch({$smarty.const.REQUEST_INTERVAL});
+        nagiosWatcher.baseUrl = "{$smarty.const.SOVA_BASE_URL}";
 
         $.datepicker.setDefaults($.datepicker.regional[ "ru" ]);
 
