@@ -162,6 +162,15 @@
             zoom = 6;
         }
 
+        {*
+        http://api.yandex.ru/maps/doc/jsapi/2.x/ref/reference/Map.xml
+
+        ymaps.util.bounds.getCenterAndZoom(
+            [[55.7, 37.6], [55.8, 37.7]],
+            [$mapElement.width(), $mapElement.height()]
+        )
+        *}
+
         yMap = new ymaps.Map("YMapsID", {
             center: center,
             zoom: zoom,
