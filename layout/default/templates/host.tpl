@@ -30,7 +30,9 @@
 
         myMap = new ymaps.Map("YMapsID", {
             center: center,
-            zoom: 14,
+            // building
+            zoom: 16,
+            type: 'yandex#publicMapHybrid',
             {if $smarty.const.DEFAULT_LAYOUT_NAME eq "mobile"}
             {else}
             behaviors: ["drag", "dblClickZoom", "scrollZoom"]
