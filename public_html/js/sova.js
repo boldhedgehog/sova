@@ -98,7 +98,7 @@ if ('undefined' == typeof(nagiosWatcher)) {
                 initNagvisMap();
             }
             if (typeof(response['servicesContainer']) !== 'undefined') {
-                $('#services-container').replaceWith(response['servicesContainer']);
+                $('#services-container').find('table').replaceWith(response['servicesContainer']);
                 initTableFilter("table.services");
                 applyFilters("table.services");
             }

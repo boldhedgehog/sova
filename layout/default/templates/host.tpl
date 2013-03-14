@@ -370,9 +370,7 @@
     {if isset($host.nagvis_thumb_url) && $host.nagvis_thumb_url}
         <div class="details" id="map">
             {if $host.nagvis_map_config}
-                <div id="nagvisServiceIconOverlay">
                 {include file="inc/services_nagvis.tpl" host=$host}
-                </div>
             {/if}
             {if $host.nagvis_map_url}<a href="{$host.nagvis_map_url}" class="host-map" target="hostMap{$host.host_id}">{/if}
             {if $host.nagvis_thumb_url}<img class="host-map" src="{$host.nagvis_thumb_url}"

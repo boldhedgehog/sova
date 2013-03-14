@@ -1,4 +1,5 @@
 {if isset($host['nagvis_map_config'])}
+<div id="nagvisServiceIconOverlay">
     {assign var="nagvisServices" value=$host.nagvis_map_config}
     {assign var="services" value=$host.nagios.services}
     <script type="text/javascript">
@@ -47,4 +48,5 @@
             </div>
         {/if}
     {/foreach}
+</div>
 {/if}
