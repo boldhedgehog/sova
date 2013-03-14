@@ -3,10 +3,12 @@ if ('undefined' == typeof(nagiosWatcher)) {
         data : {
             hostId: null
         },
-        services : {},
+        services : [],
         watcherController : null,
         url : location.href,
-        baseUrl: null,
+        baseURL: null,
+        requestURI: null,
+        refreshURI: null,
 
         sovaInterval : null,
         sovaIntervalFull : null,
@@ -17,18 +19,18 @@ if ('undefined' == typeof(nagiosWatcher)) {
         refreshFull : function() {
             this._refresh(0);
         },
-        _refresh : function (useLastCheck) {
-            if (this.watcherController) {
+        _refresh : function(useLastCheck) {
+            /*if (this.watcherController) {
                 this.watcherController.xajaxRefreshStatuses(useLastCheck);
             } else {
                 window.clearInterval(this.sovaInterval);
                 this.sovaInterval = null;
-            }
+            }*/
+            this.refreshStatuses(useLastCheck);
         },
-        getHostLogRows : function (filter, button) {
-            console.log(this);
+        getHostLogRows : function(filter, button) {
             jQuery.ajax(
-                nagiosWatcher.baseUrl + 'host/getLogRows/id/' + nagiosWatcher.data.hostId,
+                nagiosWatcher.baseURL + 'host/getLogRows/id/' + nagiosWatcher.data.hostId,
                 {
                     type: "POST",
                     dataType: "json",
@@ -47,6 +49,59 @@ if ('undefined' == typeof(nagiosWatcher)) {
                     data: filter
                 }
             );
+        },
+        refreshStatuses : function(useLastCheck) {
+            useLastCheck = useLastCheck || false;
+            jQuery.ajax(
+                nagiosWatcher.refreshURI,
+                {
+                    type: "POST",
+                    dataType: "json",
+                    success: function(xhr) {
+                        nagiosWatcher.services = xhr.services;
+                        if (nagiosWatcher.services) {
+                            var service;
+                            var services = nagiosWatcher.services;
+                            for (service in services) {
+                                if (!services.hasOwnProperty(service)) {
+                                    break;
+                                }
+
+                                service = services[service];
+                                $('#service' + service.md5).removeClass().addClass(
+                                    'service bgServiceState' + service.state
+                                ).find('.imgFlapping').removeClass().addClass((service.is_flapping|0)?'hidden':'');
+
+                                /*console.log(service, 'Setting state to ' + service.state +
+                                    ' for ' + service.host_name + ':' + service.description);*/
+                            }
+                        }
+                        nagiosWatcher.onRefresh(xhr);
+                    },
+                    cache: false,
+                    data: { "useLastCheck" : useLastCheck }
+                }
+            );
+        },
+
+        onRefresh : function(xhr) {
+            //console.log(xhr);
+        },
+        // refresh on the host page
+        onRefreshHost : function(response) {
+            //console.log(response);
+            if (typeof(response['nagvisServiceIconOverlay']) !== 'undefined') {
+                $('#nagvisServiceIconOverlay').replaceWith(response['nagvisServiceIconOverlay']);
+                $('img.host-map').each(function() {
+                    scaleNagvisServiceIcons($(this))
+                });
+                initNagvisMap();
+            }
+            if (typeof(response['servicesContainer']) !== 'undefined') {
+                $('#services-container').replaceWith(response['servicesContainer']);
+                initTableFilter("table.services");
+                applyFilters("table.services");
+            }
         }
     };
 }
@@ -56,16 +111,11 @@ nagiosWatcher.assignWatcherController = function(controller) {
         return;
     }
     nagiosWatcher.watcherController = controller;
-    /*
-     * TODO: use jQuery AJAX
-    nagiosWatcher.watcherController.ajaxGetService = function (key) {
-
-    }*/
 };
 
 nagiosWatcher.startAlertsWatch = function(interval) {
-    if ('number' != typeof(this.sovaInterval)) {
-        this.sovaInterval = window.setInterval(
+    if ('number' != typeof(nagiosWatcher.sovaInterval)) {
+        nagiosWatcher.sovaInterval = window.setInterval(
             function () {
                 nagiosWatcher.refresh.call(nagiosWatcher);
             },
@@ -73,8 +123,8 @@ nagiosWatcher.startAlertsWatch = function(interval) {
         );
     }
 
-    if ('number' != typeof(this.sovaIntervalFull)) {
-        this.sovaIntervalFull = window.setInterval(
+    if ('number' != typeof(nagiosWatcher.sovaIntervalFull)) {
+        nagiosWatcher.sovaIntervalFull = window.setInterval(
             function () {
                 nagiosWatcher.refreshFull.call(nagiosWatcher);
             },
@@ -84,10 +134,10 @@ nagiosWatcher.startAlertsWatch = function(interval) {
 };
 
 nagiosWatcher.stopAlertsWatch = function() {
-    window.clearInterval(this.sovaInterval);
-    this.sovaInterval = null;
-    window.clearInterval(this.sovaIntervalFull);
-    this.sovaIntervalFull = null;
+    window.clearInterval(nagiosWatcher.sovaInterval);
+    nagiosWatcher.sovaInterval = null;
+    window.clearInterval(nagiosWatcher.sovaIntervalFull);
+    nagiosWatcher.sovaIntervalFull = null;
 };
 
 nagiosWatcher.refreshServices = function(services) {

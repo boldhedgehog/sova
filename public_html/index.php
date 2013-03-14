@@ -126,6 +126,7 @@ try {
 	throw new MissingException('CRITICAL ERROR: Page not found');
     }
 
+    /** @var $controller basicController */
     $controller = new $controllerName();
     if (!isset($_REQUEST['xjxr'])) {
         if (isset($_GLOBALS['route']['action'])) {
@@ -141,7 +142,15 @@ try {
 
         if (method_exists($controller, $methodName = $action . 'Action')) {
             $controller->preDispatch();
-            $controller->$methodName();
+            $response = $controller->$methodName();
+
+            // TODO: create response class
+            if ($response instanceof stdClass) {
+                echo json_encode($response);
+                ob_flush();
+                exit;
+            }
+
             $controller->postDispatch();
         } else {
             basicController::httpError(404);

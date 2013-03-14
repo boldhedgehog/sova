@@ -32,11 +32,21 @@ class serviceController extends watcherController
         return parent::__construct();
     }
 
+    public function preDispatch()
+    {
+        if (!$this->_id) $this->_id = self::getRequestVar('id');
+
+        return parent::preDispatch();
+    }
+
+    public function getRefreshUri()
+    {
+        return 'service/refreshStatuses/id/' . $this->_id;
+    }
+
     public function indexAction()
     {
         parent::indexAction();
-
-        if (!$this->_id) $this->_id = $_REQUEST['id'];
 
         // try to get host from DB
         /* @var $service serviceModel */
@@ -89,6 +99,11 @@ class serviceController extends watcherController
         return $this->objResponse;
     }
 
+    protected function _updateServiceTable($useLastcheck)
+    {
+        $this->jsonResponse->services = array();
+    }
+
     public function xajaxGetService($id)
     {
         $this->_id = $id;
@@ -118,12 +133,9 @@ class serviceController extends watcherController
     {
         $this->objResponse = new xajaxResponse();
 
-        // update services map overlay
-        $id = $_REQUEST['id'];
-
         // try to get service from DB
         /* @var $service serviceModel */
-        $service = (is_numeric($id)) ? $this->serviceModel->load($id) : $this->serviceModel->loadByHostIdAndNagiosName($id);
+        $service = (is_numeric($this->_id)) ? $this->serviceModel->load($this->_id) : $this->serviceModel->loadByHostIdAndNagiosName($this->_id);
 
         if ($service->getId()) {
             $dayOffset = intval($dayOffset);

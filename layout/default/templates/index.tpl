@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
     <title>{if $pageTitle}{$pageTitle|escape} :: {/if}СОВА :: {$smarty.const.SITE_NAME}</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
@@ -21,16 +21,18 @@
     <!-- Add fancyBox -->
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/fancybox2/jquery.fancybox.pack.js?v=2.1.3"></script>
 
-    <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js"></script>
+    <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js?v=14032013"></script>
 
     {$xajax_javascript}
 
     <script type="text/javascript">
     /* <![CDATA[ */
 	$(document).ready(function() {
-		nagiosWatcher.assignWatcherController(xajax_{$controllerName});
+		//nagiosWatcher.assignWatcherController(xajax_{$controllerName});
 		nagiosWatcher.startAlertsWatch({$smarty.const.REQUEST_INTERVAL});
-        nagiosWatcher.baseUrl = "{$smarty.const.SOVA_BASE_URL}";
+        nagiosWatcher.baseURL = "{$smarty.const.SOVA_BASE_URL}";
+        nagiosWatcher.requestURI = "{$controller->getRequestUri()}";
+        nagiosWatcher.refreshURI = "{$smarty.const.SOVA_BASE_URL}{$controller->getRefreshUri()}";
 
         $.datepicker.setDefaults($.datepicker.regional[ "ru" ]);
 

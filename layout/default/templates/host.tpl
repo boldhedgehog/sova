@@ -63,6 +63,8 @@
 
         nagiosWatcher.data.hostId = hostId;
 
+        nagiosWatcher.onRefresh = nagiosWatcher.onRefreshHost;
+
         initTabs();
 
         $hostTabs.bind('tabsshow', function (event, ui) {

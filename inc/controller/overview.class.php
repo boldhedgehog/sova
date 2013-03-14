@@ -5,6 +5,11 @@
  */
 class overviewController extends watcherController {
 
+    public function getRefreshUri()
+    {
+        return 'overview/refreshStatuses/';
+    }
+
     public function indexAction() {
 
         parent::indexAction();

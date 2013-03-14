@@ -18,6 +18,8 @@ abstract class watcherController extends basicController
 
     protected $overview = array();
 
+    protected $_useLastCheck = false;
+
     public function __construct()
     {
         $this->livestatusModel = new mklivestatusModel();
@@ -67,22 +69,46 @@ abstract class watcherController extends basicController
         $this->smarty->assignByRef('database_hosts', $this->databaseHosts);
     }
 
+    abstract public function getRefreshUri();
+
     /**
      *
      */
-    protected function _updateServiceTable($useLastcheck)
+    protected function _xajaxUpdateServiceTable($useLastcheck)
     {
         foreach ($this->services as $service) {
-            $service["md5"] = md5($service["host_name"] . $service["description"]);
+            $service["md5"] = hashKey($service["host_name"] . $service["description"]);
             // set service state class name
             $this->objResponse->assign("service" . $service["md5"], "className", "service bgServiceState{$service["state"]}");
             // set host image (icon)
             //$this->objResponse->assign("hostIcon" . md5($service["host_name"]), "src", LAYOUT_LOGOS_URL . mklivestatusModel::getIconWithStatus($service));
             // update service icons
-            $this->objResponse->script("$('li#service{$service["md5"]} img.imgAcknowledged')." . ($service["acknowledged"] ? 'removeClass' : 'addClass') . "('hidden');");
-            $this->objResponse->script("$('li#service{$service["md5"]} img.imgComments')." . (count($service["comments"]) ? 'removeClass' : 'addClass') . "('hidden');");
+            //$this->objResponse->script("$('li#service{$service["md5"]} img.imgAcknowledged')." . ($service["acknowledged"] ? 'removeClass' : 'addClass') . "('hidden');");
+            //$this->objResponse->script("$('li#service{$service["md5"]} img.imgComments')." . (count($service["comments"]) ? 'removeClass' : 'addClass') . "('hidden');");
             $this->objResponse->script("$('li#service{$service["md5"]} img.imgFlapping')." . ($service["is_flapping"] ? 'removeClass' : 'addClass') . "('hidden');");
         }
+    }
+
+    protected function _updateServiceTable($useLastcheck)
+    {
+        $usedServiceFields = array(
+            'md5' => null,
+            'state' => null,
+            'acknowledged' => null,
+            'comments' => null,
+            'is_flapping' => null,
+            'host_name' => null,
+            'description' => null
+        );
+
+        $keys = array();
+
+        array_walk($this->services, function (&$service) use ($usedServiceFields, &$keys) {
+            $keys[] = $service['md5'] = hashKey($service['host_name'] . $service['description']);
+            $service = array_intersect_key($service, $usedServiceFields);
+        });
+
+        $this->jsonResponse->services =  array_combine($keys, $this->services);
     }
 
     /**
@@ -96,7 +122,7 @@ abstract class watcherController extends basicController
         $lastCheck = $useLastcheck ? $_SESSION["livestatus"]["lastcheck"] : 0;
         $this->services = $this->livestatusModel->refreshServices($lastCheck);
 
-        $this->_updateServiceTable($useLastcheck);
+        $this->_xajaxUpdateServiceTable($useLastcheck);
 
         $this->hosts = $this->livestatusModel->refreshHosts($lastCheck);
         /*
@@ -119,6 +145,28 @@ abstract class watcherController extends basicController
         }
 
         return $this->objResponse;
+    }
+
+    public function refreshStatusesAction()
+    {
+        $this->_useLastCheck = (boolean) isset($_POST['useLastCheck'])?$_POST['useLastCheck']:false;
+
+        $time = time();
+        $this->jsonResponse = new stdClass();
+
+        $lastCheck = $this->_useLastCheck ? $_SESSION["livestatus"]["lastcheck"] : 0;
+        $this->services = $this->livestatusModel->refreshServices($lastCheck);
+
+        $this->_updateServiceTable($this->_useLastCheck);
+
+        $this->hosts = $this->livestatusModel->refreshHosts($lastCheck);
+
+        if ($this->services || $this->hosts) {
+            $_SESSION["livestatus"]["lastcheck"] = $time;
+            $this->jsonResponse->sovaLastCheckValue = date(DATE_SOVA_DATETIME, $time);
+        }
+
+        return $this->jsonResponse;
     }
 
     public function xajaxGetService($key)

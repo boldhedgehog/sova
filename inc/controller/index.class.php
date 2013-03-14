@@ -35,4 +35,9 @@ class indexController extends watcherController
 
         $_SESSION["livestatus"]["lastcheck"] = $time;
     }
+
+    public function getRefreshUri()
+    {
+        return 'index/refreshStatuses/';
+    }
 }

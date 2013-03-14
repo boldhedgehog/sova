@@ -21,11 +21,16 @@ class basicController
     /* @var $objResponse xajaxResponse */
     protected $objResponse;
 
+    /** @var stdClass */
+    protected $jsonResponse;
+
     /* @var $sessionNotifications array */
     protected $sessionNotifications = null;
 
     /* @var array */
     protected $operatorInfo = null;
+
+    protected $requestUri;
 
     /**
      * HTML error codes
@@ -78,6 +83,8 @@ class basicController
     {
         $this->xajax = $GLOBALS["singletones"]["xajax"];
         $this->smarty = $GLOBALS["singletones"]["smarty"];
+
+        $this->requestUri = self::getEnvVar('REQUEST_URI');
 
         $this->xajax->register(XAJAX_CALLABLE_OBJECT, $this);
         $this->smarty->assignByRef("controller", $this);
@@ -133,6 +140,11 @@ class basicController
     public function getXajax()
     {
         return $this->xajax;
+    }
+
+    public function getRequestUri()
+    {
+        return $this->requestUri;
     }
 
     public function __toString()
@@ -279,11 +291,23 @@ class basicController
     /**
      * Returns $_SERVER variable value
      * @param string $var
+     * @param null $default
      * @return string
      */
     public static function getEnvVar($var, $default = NULL)
     {
         return (isset($_SERVER[$var])) ? $_SERVER[$var] : $default;
+    }
+
+    /**
+     * Returns $_REQUEST variable value
+     * @param string $var
+     * @param null $default
+     * @return string
+     */
+    public static function getRequestVar($var, $default = NULL)
+    {
+        return (isset($_REQUEST[$var])) ? $_REQUEST[$var] : $default;
     }
 
     public static function getCookie($var, $default = NULL)

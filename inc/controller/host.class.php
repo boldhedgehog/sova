@@ -16,6 +16,8 @@ class hostController extends watcherController
     /* @var $hostModel hostModel */
     protected $hostModel = false;
 
+    protected $_id = null;
+
     protected static $logFilterCookieName = 'logfilterhostLog';
 
     /**
@@ -28,15 +30,25 @@ class hostController extends watcherController
         return parent::__construct();
     }
 
+    public function getRefreshUri()
+    {
+        return 'host/refreshStatuses/id/' . $this->_id;
+    }
+
+    public function preDispatch()
+    {
+        if (!$this->_id) $this->_id = self::getRequestVar('id');
+
+        return parent::preDispatch();
+    }
+
     public function indexAction()
     {
         parent::indexAction();
 
-        $id = $_REQUEST['id'];
-
         // try to get host from DB
         /* @var $host hostModel */
-        $host = (is_numeric($id)) ? $this->hostModel->load($id) : $this->hostModel->loadByNagiosName($id);
+        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
 
         if (!$host->getId()) {
             self::httpError(404);
@@ -72,11 +84,9 @@ class hostController extends watcherController
 
     public function passportAction()
     {
-        $id = $_REQUEST['id'];
-
         // try to get host from DB
         /* @var $host hostModel */
-        $host = (is_numeric($id)) ? $this->hostModel->load($id) : $this->hostModel->loadByNagiosName($id);
+        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
 
         if (!$host->getId()) {
             self::httpError(404);
@@ -104,9 +114,21 @@ class hostController extends watcherController
         return $service->xajaxGetService($id);
     }
 
-    protected function _updateServiceTable($useLastcheck)
+    protected function _xajaxUpdateServiceTable($useLastcheck)
     {
         return;
+    }
+
+    protected function _updateServiceTable($useLastcheck)
+    {
+        $this->jsonResponse->services = array();
+        if (!is_numeric($this->_id)) {
+            foreach ($this->services as $key => $service) {
+                if ($service['host_name'] != $this->_id) {
+                        unset($this->services[$key]);
+                    }
+            }
+        }
     }
 
     public function xajaxRefreshStatuses($useLastcheck = true)
@@ -118,12 +140,9 @@ class hostController extends watcherController
             return $this->objResponse;
         }
 
-        // update services map overlay
-        $id = $_REQUEST['id'];
-
         // try to get host from DB
         /* @var $host hostModel */
-        $host = (is_numeric($id)) ? $this->hostModel->load($id) : $this->hostModel->loadByNagiosName($id);
+        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
 
         if ($host->getId()) {
             $this->smarty->assign('host', $host->loadContacts()->loadServices()->loadNagiosData()->getData());
@@ -147,22 +166,66 @@ class hostController extends watcherController
             $this->objResponse->script('applyFilters("table.services")');
         }
 
-
         return $this->objResponse;
     }
 
+    public function refreshStatusesAction()
+    {
+        parent::refreshStatusesAction();
+
+        // for quick and no service states were changed
+        if ($this->_useLastCheck && !$this->services) {
+            return $this->jsonResponse;
+        }
+
+        // TODO: replace only if this host's services were changed.
+        // update services map overlay
+
+        // try to get host from DB
+        /* @var $host hostModel */
+        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
+
+        if ($host->getId()) {
+
+            $this->smarty->assign('host', $host->loadContacts()->loadServices()->loadNagiosData()->getData());
+
+            $this->smarty->assign('isAjax', true);
+
+            $html = $this->smarty->fetch('inc/services_nagvis.tpl');
+            //$this->objResponse->script("$('div#nagvisServiceIconOverlay').replaceWith('$html')");
+            //$this->objResponse->script("alert(\"$html\")");
+
+            // update nagvis services
+            $this->jsonResponse->nagvisServiceIconOverlay = $html;
+
+            // update services table
+            $html = $this->smarty->fetch('inc/services_table.tpl');
+            $this->jsonResponse->servicesContainer = $html;
+
+            // TODO: move to JS
+            /*$this->jsonResponse->script('initServiceLinks()');
+            $this->jsonResponse->script('initTableFilter("table.services")');
+            $this->jsonResponse->script('applyFilters("table.services")');*/
+        }
+
+        return $this->jsonResponse;
+    }
+
+    /**
+     * @param $filter
+     * @return xajaxResponse
+     *
+     * @deprecated Use getLogRowsAction with jQuery AJAX
+     */
     public function xajaxGetLogRows($filter)
     {
         $filter = $this->_setLogFilterDefaults($filter);
 
         $this->objResponse = new xajaxResponse();
 
-        // update services map overlay
-        $id = $_REQUEST['id'];
-
         // try to get host from DB
         /* @var $host hostModel */
-        $host = (is_numeric($id)) ? $this->hostModel->load($id) : $this->hostModel->loadByNagiosName($id);
+        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
 
         if ($host->getId()) {
             $this->smarty->assign('nagiosObject', $host->loadNagiosLog($filter)->getData());
@@ -178,12 +241,9 @@ class hostController extends watcherController
     {
         $filter = $this->_setLogFilterDefaults($_POST);
 
-        // update services map overlay
-        $id = $_REQUEST['id'];
-
         // try to get host from DB
         /* @var $host hostModel */
-        $host = (is_numeric($id)) ? $this->hostModel->load($id) : $this->hostModel->loadByNagiosName($id);
+        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
 
         if ($host->getId()) {
             $this->smarty->assign('nagiosObject', $host->loadNagiosLog($filter)->getData());
