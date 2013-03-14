@@ -270,15 +270,32 @@ class mklivestatusModel extends basicModel
 
     /**
      * Waits for services, which states changed from non critical to critical
-     * @param unixtime $time
-     * @param milliseconds $timeout
+     * @param integer $time UNIX timestamp
+     * @param integer $timeout timeout in milliseconds
+     *
+     * @return array|mixed|String
      */
     public function waitForSovaCriticalServices($time, $timeout = 5000)
     {
         // set max execution time to timeout * 2
-        if (($timeoutSec = $timeout / 1000 * 2) < intval(ini_get('max_execution_time')))
+        if (($timeoutSec = $timeout / 1000 * 2) < intval(ini_get('max_execution_time'))) {
             ini_set('max_execution_time', intval($timeoutSec));
-        return $this->_executeQuery("GET services\nColumns: $this->commonServiceColumns\nWaitCondition: state = 1\nWaitCondition: state = 2\nWaitConditionOr: 2\nWaitTrigger: state\nWaitTimeout: $timeout\nFilter: groups >= " . STOROZH_SERVICE_GROUP . "\nFilter: last_state_change > $time");
+        }
+
+        $time = intval($time);
+        $timeout = intval($timeout);
+
+        return $this->_executeQuery(
+            "GET services\n" .
+                "Columns: $this->commonServiceColumns\n" .
+                "WaitCondition: state = 1\n" .
+                "WaitCondition: state = 2\n" .
+                "WaitConditionOr: 2\n" .
+                "WaitTrigger: state\n" .
+                "WaitTimeout: $timeout\n" .
+                "Filter: groups >= " . STOROZH_SERVICE_GROUP . "\n" .
+                "Filter: last_state_change > $time"
+        );
     }
 
     /**

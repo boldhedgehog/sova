@@ -103,12 +103,16 @@ abstract class watcherController extends basicController
 
         $keys = array();
 
-        array_walk($this->services, function (&$service) use ($usedServiceFields, &$keys) {
-            $keys[] = $service['md5'] = hashKey($service['host_name'] . $service['description']);
-            $service = array_intersect_key($service, $usedServiceFields);
-        });
+        array_walk(
+            $this->services,
+            function (&$service) use ($usedServiceFields, &$keys) {
+                $keys[] = $service['md5'] = hashKey($service['host_name'] . $service['description']);
+                $service = array_intersect_key($service, $usedServiceFields);
+            }
+        );
 
-        $this->jsonResponse->services =  array_combine($keys, $this->services);
+        // when no services are changed - return empty class
+        $this->jsonResponse->services = $keys ? array_combine($keys, $this->services) : new stdClass();
     }
 
     /**
@@ -140,8 +144,8 @@ abstract class watcherController extends basicController
         }
 
         if ($this->services || $this->hosts) {
-            $_SESSION["livestatus"]["lastcheck"] = $time;
-            $this->objResponse->assign("sovaLastCheckValue", "innerHTML", date(DATE_SOVA_DATETIME, $time));
+            $_SESSION['livestatus']['lastcheck'] = $time;
+            $this->objResponse->assign('sovaLastCheckValue', 'innerHTML', date(DATE_SOVA_DATETIME, $time));
         }
 
         return $this->objResponse;
@@ -154,7 +158,7 @@ abstract class watcherController extends basicController
         $time = time();
         $this->jsonResponse = new stdClass();
 
-        $lastCheck = $this->_useLastCheck ? $_SESSION["livestatus"]["lastcheck"] : 0;
+        $lastCheck = $this->_useLastCheck ? $_SESSION['livestatus']['lastcheck'] : 0;
         $this->services = $this->livestatusModel->refreshServices($lastCheck);
 
         $this->_updateServiceTable($this->_useLastCheck);
@@ -162,7 +166,7 @@ abstract class watcherController extends basicController
         $this->hosts = $this->livestatusModel->refreshHosts($lastCheck);
 
         if ($this->services || $this->hosts) {
-            $_SESSION["livestatus"]["lastcheck"] = $time;
+            $_SESSION['livestatus']['lastcheck'] = $time;
             $this->jsonResponse->sovaLastCheckValue = date(DATE_SOVA_DATETIME, $time);
         }
 

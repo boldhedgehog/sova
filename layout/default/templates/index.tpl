@@ -59,7 +59,7 @@
     var sAlertId = '{if isset($alert)}{$alert.alert_id}{/if}';
 
     $(document).ready(function (){
-        $('#header-puller a').click(function(){
+        $('#header-puller').find('a').click(function(){
             $('#header-body').toggle();
         });
     });
