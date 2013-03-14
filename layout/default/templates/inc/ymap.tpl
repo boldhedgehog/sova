@@ -1,7 +1,7 @@
-{assign var=min_lat value="50.259679"}
-{assign var=max_lat value="50.259679"}
-{assign var=min_lon value="28.648092"}
-{assign var=max_lon value="28.648092"}
+{assign var=min_lat value="180"}
+{assign var=max_lat value="0"}
+{assign var=min_lon value="180"}
+{assign var=max_lon value="0"}
 
 <script src="//api-maps.yandex.ru/2.0-stable/?load=package.standard,package.geoObjects,package.clusters&lang=uk-UA"
         type="text/javascript"></script>
@@ -159,7 +159,7 @@
         if (params.zoom) {
             zoom = params.zoom;
         } else {
-            zoom = 6;
+            zoom = false;
         }
 
         {*
@@ -179,6 +179,18 @@
             behaviors: ["drag", "dblClickZoom", "scrollZoom"]
             {/if}
         });
+
+        if (!zoom || !center) {
+            //center = [({$max_lat} + {$min_lat})/2, ({$max_lon} + {$min_lon})/2];
+            var container = $("#YMapsID");
+            var centerZoom = ymaps.util.bounds.getCenterAndZoom(
+                    [[{$min_lat}, {$min_lon}], [{$max_lat}, {$max_lon}]],
+                    [container.width(), container.height()]
+            );
+            if (!center) yMap.setCenter(centerZoom.center);
+            if (!zoom) yMap.setZoom(centerZoom.zoom);
+            //console.log(centerZoom);
+        }
 
         yMap.controls.add('zoomControl');
         yMap.controls.add('typeSelector');
@@ -217,11 +229,11 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#YMapsID").height($(window).innerHeight() - 30);
+        $("#YMapsID").height($(window).innerHeight() - 30 - $("#header").outerHeight());
         $(window).bind("hashchange", navigateFromHash);
     });
 
     $(window).resize(function() {
-        $("#YMapsID").height($(window).innerHeight() - 30);
+        $("#YMapsID").height($(window).innerHeight() - 30 - $("#header").outerHeight());
     });
 </script>
