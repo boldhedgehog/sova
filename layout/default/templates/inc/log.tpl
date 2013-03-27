@@ -4,6 +4,7 @@
 <th colspan="4" class="time-delimiter">{$fromTime|date_format:'%Y-%m-%d'}</th>
 </tr>
 {/if*}
+{strip}
 {foreach from=$logItems item=log name=log}
 <tr class="log-row state{$log.state}">
     <td class="line-number">{$smarty.foreach.log.iteration}</td>
@@ -17,3 +18,4 @@
 <th colspan="5" class="time-delimiter">Записи відсутні</th>
 </tr>
 {/foreach}
+{/strip}

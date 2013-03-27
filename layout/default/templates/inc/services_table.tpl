@@ -7,13 +7,14 @@
 	    <th class="nofilter">&nbsp;</th>
         <th><span>№</span></th>
         <th><span>Тип</span></th>
-        <th><span>Назва</span></th>
+        {if $servicesHasAliasColumn}<th><span>Назва</span></th>{/if}
 	    <th class="state"><span>Стан</span></th>
 	    <th><span>Повідомлення</span></th>
         <th class="time nofilter" title="Тривалість">Тр-ть</th>
 	</tr>
     </thead>
     {*/if*}
+    {strip}
     <tbody>
         {foreach name=services from=$nagiosServices|@sortby:"db_data.zone.plas_zone_id,db_data.position,db_data.alias" item=service}
         {if isset($service['db_data'])}
@@ -48,13 +49,10 @@
             {assign var=zone_row_type value="empty"}
         {/if}
             
-        <tr onmouseover="highlightZone(this, true)" onmouseout="highlightZone(this, false)"
-	    id="service{$service.md5}"
-        class="state{$service.state}
-        {if $smarty.foreach.services.first} first{elseif $smarty.foreach.services.last} last{/if}
-        zone-row-id-{$dbService.zone.zone_id}{if $zone_row_type == "new"}
-        zone-row-start{elseif $zone_row_type == "continue"} zone-row-continue{/if}
-        {if $dbService.communication_device_id}zone-row-device-{$dbService.communication_device_id|escape}{/if}
+        <tr onmouseover="highlightZone(this, true)" onmouseout="highlightZone(this, false)" id="service{$service.md5}" class="state{$service.state}
+        {if $smarty.foreach.services.first} first{elseif $smarty.foreach.services.last} last{/if} zone-row-id-{$dbService.zone.zone_id}
+        {if $zone_row_type == "new"} zone-row-start{elseif $zone_row_type == "continue"} zone-row-continue{/if}
+        {if $dbService.communication_device_id} zone-row-device-{$dbService.communication_device_id|escape}{/if}
         ">
             {if $zone_row_type == "new"}
                 <td class="zone-header first zone-id" title="{$dbService.zone.name|escape}">{$dbService.zone.name|escape}</td>
@@ -68,7 +66,7 @@
             <td>
                 {if $dbService && (!isset($nolinks)|| !$nolinks)}<a href="{$smarty.const.SOVA_BASE_URL}service/index/id/{$host.host_id}:{$service.description|escape:"url"}" class="serviceLink{if $dbService.type eq 'service'} service{/if}">{/if}{$serviceName}{if $dbService && (!isset($nolinks) || !$nolinks)}</a>{/if}
             </td>
-            <td>{if $dbService.alias}{$dbService.alias|escape}{else}&nbsp;{/if}</td>
+            {if $servicesHasAliasColumn}<td>{if $dbService.alias}{$dbService.alias|escape}{else}&nbsp;{/if}</td>{/if}
             <td class="state bgServiceState{$service.state}">{$service.state_text}
         	    <div class="serviceImages">
                     <img class="imgAcknowleged{if $service.acknowledged != 1} hidden{/if}" src="{$smarty.const.LAYOUT_IMAGES_URL}ack.gif" alt="ОБР" title="Сервіс в обробці"/>
@@ -84,4 +82,5 @@
 
         {/foreach}
     </tbody>
+    {/strip}
 </table>

@@ -68,8 +68,18 @@ class hostController extends watcherController
             ->getData();
 
         /** @var $host array */
-
         $this->smarty->assignByRef('host', $host);
+
+        $servicesHasAliasColumn = false;
+
+        foreach ($host['services'] as &$service) {
+            if ($service['alias'] != '') {
+                $servicesHasAliasColumn = true;
+                break;
+            }
+        }
+
+        $this->smarty->assign('servicesHasAliasColumn', $servicesHasAliasColumn);
 
         $this->smarty->assign('isAjax', false);
         
@@ -187,7 +197,19 @@ class hostController extends watcherController
 
         if ($host->getId()) {
 
-            $this->smarty->assign('host', $host->loadContacts()->loadServices()->loadNagiosData()->getData());
+            $host = $host->loadContacts()->loadServices()->loadNagiosData()->getData();
+            $this->smarty->assignByRef('host', $host);
+
+            $servicesHasAliasColumn = false;
+
+            foreach ($host['services'] as &$service) {
+                if ($service['alias'] != '') {
+                    $servicesHasAliasColumn = true;
+                    break;
+                }
+            }
+
+            $this->smarty->assign('servicesHasAliasColumn', $servicesHasAliasColumn);
 
             $this->smarty->assign('isAjax', true);
 

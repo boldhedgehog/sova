@@ -19,6 +19,7 @@
 /* ]]> */
 </script>
 {/literal}
+{strip}
 <div id="leftnav">
     <div class="tabs">
 	<ul class="tabs">
@@ -48,3 +49,4 @@
 	</ul>
     </div>
 </div>
+{/strip}
