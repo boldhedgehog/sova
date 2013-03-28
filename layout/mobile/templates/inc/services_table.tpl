@@ -7,7 +7,7 @@
 	    <th class="nofilter">&nbsp;</th>
         <th><span>№</span></th>
         <th><span>Тип</span></th>
-        <th><span>Назва</span></th>
+        {if $servicesHasAliasColumn}<th><span>Назва</span></th>{/if}
 	    <th><span>Повідомлення</span></th>
         {*
 	    <th class="time nofilter">Останнє оновлення</th>
@@ -66,7 +66,7 @@
             <td>
                 {if $dbService && (!isset($nolinks)|| !$nolinks)}<a href="{$smarty.const.SOVA_BASE_URL}service/index/id/{$host.host_id}:{$service.description|escape:"url"}" title="{$serviceName|escape}" class="serviceLink{if $dbService.type eq 'service'} service{/if}">{/if}<span id="service[{$host.host_id}:{$service.description|escape:"javascript"}]">{$serviceName}</span>{if $dbService && (!isset($nolinks) || !$nolinks)}</a>{/if}
             </td>
-            <td>{if $dbService.alias}{$dbService.alias|escape}{else}&nbsp;{/if}</td>
+            {if $servicesHasAliasColumn}<td>{if $dbService.alias}{$dbService.alias|escape}{else}&nbsp;{/if}</td>{/if}
             <td>{$service.plugin_output|escape}</td>
             {*
             <td class="time">{$service.last_check|date_format:'%Y-%m-%d %H:%M:%S'}</td>
