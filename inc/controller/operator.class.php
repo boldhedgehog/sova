@@ -71,7 +71,7 @@ class operatorController extends basicController
         //session_destroy();
         if (!$_SESSION["user"]) {
             session_destroy();
-            basicController::httpError(404);
+            basicController::httpError(403);
             self::logError("Unknown user {$_SERVER["PHP_AUTH_USER"]}");
             die;
         }

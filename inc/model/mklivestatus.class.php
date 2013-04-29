@@ -96,7 +96,7 @@ class mklivestatusModel extends basicModel
     {
         $contact = $this->_executeQuery("GET contacts\nFilter: name = " . addslashes($name));
 
-        return is_array($contact) ? $contact[0] : false;
+        return (is_array($contact) && isset($contact[0])) ? $contact[0] : false;
     }
 
     public function getServices($serviceName = NULL)
