@@ -63,6 +63,7 @@ class hostController extends watcherController
             ->loadServices()
             ->loadCommunicationDevices()
             ->loadNotificationDevices()
+            ->loadRegistry()
             ->loadNagiosData()
             ->loadNagiosLog($filter)
             ->getData();

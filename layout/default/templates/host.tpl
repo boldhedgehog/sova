@@ -88,6 +88,7 @@
         {if !($host.zones && isset($host['has_geo']) && $host.has_geo)}$hostTabs.tabs('disable', 'ymap');{/if}
 
         {if !isset($host.config_info) || not $host.config_info}$hostTabs.tabs('disable', 'configinfo');{/if}
+        {if !isset($host.registry) || not $host.registry}$hostTabs.tabs('disable', 'registry');{/if}
     }
 
     //$(window).load(function() {
@@ -108,6 +109,7 @@
             <li><a href="#schemes">Галерея</a></li>
             <li><a href="#ymap">Мапа</a></li>
             <li><a href="#configinfo">Завдання</a></li>
+            <li><a href="#registry">Реєстр</a></li>
         </ul>
         <div class="details" id="details">
             <table>
@@ -416,6 +418,13 @@
         <div class="details" id="configinfo">
             <div>
             {$host.config_info}
+            </div>
+        </div>
+        <div class="details" id="registry">
+            <div>
+                {if isset($host.registry) and $host.registry}
+                {include file="inc/host_registry.tpl" items=$host.registry}
+                {/if}
             </div>
         </div>
     </div>

@@ -279,10 +279,21 @@
     {/if}
     {if $host.scheme_image_name}
         <div data-role="collapsible" id="schemes">
-            <h2>Галерея</h2>
+            <h2>Схема</h2>
             {include file="inc/host_schemes.tpl" host=$host}
         </div>
     {/if}
-
+        {if isset($host.config_info) and $host.config_info}
+        <div data-role="collapsible" id="configinfo">
+            <h2>Завдання</h2>
+            {$host.config_info}
+        </div>
+        {/if}
+        {if isset($host.registry) and $host.registry}
+        <div data-role="collapsible" id="registry">
+            <h2>Реєстр</h2>
+            {include file="inc/host_registry.tpl" items=$host.registry}
+        </div>
+        {/if}
     </div>
 </div>

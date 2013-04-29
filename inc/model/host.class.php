@@ -124,6 +124,18 @@ class hostModel extends nagiosObjectModel
         return $this;
     }
 
+    public function loadRegistry($key = NULL)
+    {
+        if (!$this->assureLoaded($key)) {
+            return $this;
+        }
+
+        $registryModel = new hostRegistryModel();
+        $this->data["registry"] = $registryModel->getByHostId($this->getId());
+
+        return $this;
+    }
+
     public function loadServices($key = NULL)
     {
         if (!$this->assureLoaded($key)) {

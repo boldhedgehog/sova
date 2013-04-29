@@ -663,7 +663,8 @@ table tr.state3 td.state { background-color: #aaa; }
 table tr.state-1 td.state { background-color: #aaa; }
 
 table tr.log-row td.state { text-align: left; }
-table tr.log-row td.time, table.log th.time {
+
+.grid .time {
     text-align: center;
     width: 172px;
 }
