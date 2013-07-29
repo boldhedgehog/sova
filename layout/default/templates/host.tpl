@@ -7,6 +7,20 @@
 
         var center = null;
 
+        {if $host.scheme_image_name}
+            {assign var="host_imagefile" value=$smarty.const.SITE_ROOT|cat:"media/scheme/"|cat:$host.scheme_image_name}
+            /*{capture assign="host_image_html"}
+                <a href="{$smarty.const.SOVA_BASE_URL}media/scheme/{$host.scheme_image_name}"
+                rel="gallery{$host.host_id}" title="{$host.alias|escape}"
+                target="_blank" class="gallery"><img src="{$smarty.const.SOVA_BASE_URL}{imagemodifier
+                img=$host_imagefile chain="host-scheme-ymap" output="url"
+                outputformat="jpeg"
+                }" alt="{$host.alias|escape}"></a>
+                {/capture}*/
+        {else}
+            {assign var="host_imagefile" value=""}
+        {/if}
+
         {foreach from=$host.zones item=item name=current}
             {if $item.entrance_position_longitude && $item.entrance_position_latitude}
             {if $item.scheme_image_name}
