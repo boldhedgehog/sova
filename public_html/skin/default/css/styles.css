@@ -213,12 +213,16 @@ span.caption-1, td.caption-1 { background-color: #aaa; }
     background-color: #f0f8ff;
 }
 
-#leftnav ul.hostsNav li a {
+.hostsNav a {
     padding: 5px 5px 5px 10px;
     display: block;
 }
 
-#leftnav ul.hostsNav li.active {
+.hostsNav a:first-letter {
+    font-weight: bold;
+}
+
+.hostsNav .active {
     font-weight: bold;
     background-color: #0cf;
 }
@@ -238,11 +242,11 @@ span.caption-1, td.caption-1 { background-color: #aaa; }
     width: 100%
 }
 
-#leftnav ul.tabs li {
+#leftnav .tabs li {
     background-color: #eee;
 }
 
-#leftnav ul.tabs li.active {
+#leftnav .tabs li.active {
     background-color: #0cf;
 }
 
