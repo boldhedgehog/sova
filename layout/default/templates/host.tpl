@@ -11,6 +11,14 @@
             {if $item.entrance_position_longitude && $item.entrance_position_latitude}
             {if $item.scheme_image_name}
                 {assign var="imagefile" value=$smarty.const.SITE_ROOT|cat:"media/scheme/"|cat:$item.scheme_image_name}
+                /*{capture assign="zone_image_html"}
+                <a href="{$smarty.const.SOVA_BASE_URL}media/scheme/{$item.scheme_image_name}"
+                rel="gallery{$host.host_id}" title="{$host.alias|cat:": "|cat:$item.name|escape}"
+                target="_blank" class="gallery"><img src="{$smarty.const.SOVA_BASE_URL}{imagemodifier
+                        img=$imagefile chain="host-scheme-ymap" output="url"
+                        outputformat="jpeg"
+                        }" alt="{$item.name|escape}"></a>
+                {/capture}*/
             {else}
                 {assign var="imagefile" value=""}
             {/if}
