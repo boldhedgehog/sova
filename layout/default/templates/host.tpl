@@ -9,6 +9,11 @@
 
         {foreach from=$host.zones item=item name=current}
             {if $item.entrance_position_longitude && $item.entrance_position_latitude}
+            {if $item.scheme_image_name}
+                {assign var="imagefile" value=$smarty.const.SITE_ROOT|cat:"media/scheme/"|cat:$item.scheme_image_name}
+            {else}
+                {assign var="imagefile" value=""}
+            {/if}
                 center = [{$item.entrance_position_latitude}, {$item.entrance_position_longitude}];
                 cluster.add( new ymaps.GeoObject({
                     geometry: {
@@ -16,7 +21,13 @@
                         coordinates: [{$item.entrance_position_latitude}, {$item.entrance_position_longitude}]
                     },
                     properties: {
-                        hintContent: "{$item.name}"
+                        hintContent: "{$item.name}",
+                        caption: "{$host.alias|cat:": "|cat:$item.name|escape:javascript}",
+                        balloonContentHeader: "<span class=\"balloon-header\">{$host.alias|escape:javascript}</span>",
+                        balloonContentBody: ""
+                            {if isset($host_image_html) && $host_imagefile !== ""} + "{$host_image_html|escape:javascript}"{/if}
+                            {if isset($zone_image_html) && $imagefile !== ""} + "{$zone_image_html|escape:javascript}"{/if}
+                            + "<p class=\"balloon-zone\">{$item.name|escape:javascript}</p>"
                     }
 
                 })
