@@ -79,6 +79,15 @@
 
         myMap.geoObjects.add(cluster);
 
+        $(".gallery").fancybox({
+            prevEffect: 'none',
+            nextEffect: 'none',
+            closeBtn: true,
+            helpers: {
+                title: { type: 'outside' }
+            }
+        });
+
         //initTabs();
     }
 </script>
