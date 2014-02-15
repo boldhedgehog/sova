@@ -1040,3 +1040,25 @@ function initStatusBar() {
 
     //barInterval = setInterval(function(){var el = document.getElementById('status-bar');el.style.bottom = '0px';}, 500);
 }
+
+function toggleCollapseLeftNav() {
+    return function () {
+        var $pullerLeft = $('#left-puller');
+
+        $pullerLeft.toggleClass('clicked');
+
+        // scroll to puller
+        if (!$pullerLeft.hasClass('clicked') && $(window).scrollTop() > $pullerLeft.offset().top) {
+            $('html, body').animate({
+                scrollTop: $(this).offset().top
+            }, 200);
+        }
+
+        $.cookie('nav_collapsed', $pullerLeft.hasClass('clicked'), {expires: 30, path: REWRITE_BASE});
+
+        $('#leftnav-container').toggleClass('collapsed');
+        $('#content').toggleClass('expanded');
+
+        $pullerLeft.find('span').toggleClass('fa-angle-double-left').toggleClass('fa-angle-double-right');
+    }
+}

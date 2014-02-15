@@ -10,6 +10,8 @@
 
     <link rel="stylesheet" href="{$smarty.const.SOVA_BASE_URL}js/fancybox2/jquery.fancybox.css?v=2.1.3" type="text/css" media="screen" />
 
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/json/json2.js"></script>
 
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/jquery-1.8.2.js"></script>
@@ -21,7 +23,7 @@
     <!-- Add fancyBox -->
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/fancybox2/jquery.fancybox.pack.js?v=2.1.3"></script>
 
-    <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js?v=14032013"></script>
+    <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js?v=14032015"></script>
 
     {$xajax_javascript}
 
@@ -58,9 +60,35 @@
     REWRITE_BASE = "{$smarty.const.REWRITE_BASE}";
     var sAlertId = '{if isset($alert)}{$alert.alert_id}{/if}';
 
+    // pullers
     $(document).ready(function (){
         $('#header-puller').find('a').click(function(){
             $('#header-body').toggle();
+        });
+
+        var navOffset = $('.hostNav.active').offset();
+        var $pullerLeft = $('#left-puller');
+        if (navOffset) {
+            $pullerLeft.css('top', navOffset.top);
+        }
+
+        $pullerLeft.click(toggleCollapseLeftNav());
+
+        if ($.cookie('nav_collapsed') == 'true' && !$pullerLeft.hasClass('clicked')) {
+            $pullerLeft.click();
+        }
+
+        $(window).scroll(function() {
+            var $leftContainer = $('#leftnav-container');
+            if (!$pullerLeft.hasClass('clicked')) {
+                if ($(this).scrollTop() > ($leftContainer.offset().top + $leftContainer.height())) {
+                    $leftContainer.addClass('collapsed');
+                    $('#content').addClass('expanded');
+                } else {
+                    $leftContainer.removeClass('collapsed', 'fast');
+                    $('#content').removeClass('expanded');
+                }
+            }
         });
     });
 
@@ -90,11 +118,14 @@
 	</div>
 	<div class="clearer">&nbsp;</div>
     <div id="container">
-        <div id="leftnav-container">
+        <div id="left-puller"{if $overview|@count <= 1} class="clicked"{/if}>
+            <span class="fa {if $overview|@count <= 1}fa-angle-double-right{else}fa-angle-double-left{/if}"></span>
+        </div>
+        <div id="leftnav-container"{if $overview|@count <= 1} class="collapsed"{/if}>
         {include file="inc/menu.tpl"}
         <div id="credentials">Розроблено <a href="http://i-p.in.ua/" target="_blank"><img src="{$smarty.const.LAYOUT_IMAGES_URL}logo_ip.jpg" alt="http://i-p.in.ua/" width="65" height="26" /></a></div>
         </div>
-        <div id="content">{$content}</div>
+        <div id="content"{if $overview|@count <= 1} class="expanded"{/if}>{$content}</div>
 	</div>
 	{include file="inc/statusbar.tpl"}
     {include file="form/settings.tpl"}
