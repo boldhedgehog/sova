@@ -241,6 +241,9 @@ span.caption-1, td.caption-1 { background-color: #aaa; }
     background-color: #fff;
 }
 
+#leftnav ul.hostsNav li:nth-child(2n).active {
+    background-color: #0cf;
+}
 
 #leftnav ul.tabs {
     width: 100%;
