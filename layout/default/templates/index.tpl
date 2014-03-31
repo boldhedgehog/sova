@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="{$smarty.const.SOVA_BASE_URL}js/fancybox2/jquery.fancybox.css?v=2.1.3" type="text/css" media="screen" />
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.DEFAULT_LAYOUT_NAME}/css/font-awesome.css" rel="stylesheet">
 
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/json/json2.js"></script>
 
