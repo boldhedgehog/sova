@@ -78,6 +78,11 @@ class serviceLogicalNumber extends stringDatatype
     protected $name = "logical_number";
 }
 
+class serviceSchemeImage extends imageDatatype
+{
+    protected $name = "scheme_image_name";
+    protected $caption = "Схема";
+}
 /**
  *
  * @author ISM-UKRAINE\a.yegorov
