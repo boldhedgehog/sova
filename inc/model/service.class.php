@@ -106,6 +106,7 @@ class serviceModel extends nagiosObjectModel {
         $this->addField(new servicePosition($this));
         $this->addField(new serviceSerialNumber($this));
         $this->addField(new serviceLogicalNumber($this));
+        $this->addField(new serviceSchemeImage($this));
 
         $this->resetJoins()
             ->addLeftJoin("zoneModel", array("zone_id"=>"zone_id"), "zone")
