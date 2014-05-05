@@ -32,14 +32,14 @@ session_start();
 require_once('../inc/model/db.class.php');
 
 try {
-	$globalDB = new dbModel('mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => false, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
-	$globalDB->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	$stmt = $globalDB->prepare("SET NAMES utf8");
-	$stmt->execute();
-	
-	$GLOBALS["DATABASES"]["mysql"] = $globalDB;
+    $globalDB = new dbModel('mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => false, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
+    $globalDB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $stmt = $globalDB->prepare("SET NAMES utf8");
+    $stmt->execute();
+
+    $GLOBALS["DATABASES"]["mysql"] = $globalDB;
 } catch (PDOException $e) {
-	die('DB CONNECTION FAILED IN SOVA ('. $e->getMessage() .')');
+    die('DB CONNECTION FAILED IN SOVA (' . $e->getMessage() . ')');
 }
 
 //print_r($_SERVER);
@@ -61,36 +61,43 @@ require_once('../inc/lib/smarty/SovaSmarty.class.php');
 $smarty = new SovaSmarty();
 
 if (is_object($smarty)) {
-	$smarty->setCompileDir(CACHE_PATH . 'smarty/templates_c');
-	$smarty->setCacheDir(CACHE_PATH . 'smarty');
+    $smarty->setCompileDir(CACHE_PATH . 'smarty/templates_c');
+    $smarty->setCacheDir(CACHE_PATH . 'smarty');
 
     $smarty->setTemplateDir(LAYOUT_PATH . DEFAULT_LAYOUT_NAME . "/templates")
         ->addTemplateDir(LAYOUT_PATH . BASE_LAYOUT_NAME . "/templates");
 
     $smarty->addPluginsDir(INC_PATH . "lib/smarty/plugins");
-	
-	if (isset($_SESSION["user"])) $smarty->assign("user", $_SESSION["user"]);
-	if (isset($_SESSION["operator"])) $smarty->assign("operator", $_SESSION["operator"]);
+
+    if (isset($_SESSION["user"])) $smarty->assign("user", $_SESSION["user"]);
+    if (isset($_SESSION["operator"])) $smarty->assign("operator", $_SESSION["operator"]);
 }
 
 $GLOBALS["singletones"]["smarty"] = $smarty;
 
-if (isset($_SERVER['REDIRECT_URL'])) {
-    $url = $_SERVER['REDIRECT_URL'];
-    $rewriteBase = str_replace('/','\/', REWRITE_BASE);
+if (isset($_SERVER['REDIRECT_URL']) || isset($_SERVER['REQUEST_URI'])) {
+    if (isset($_SERVER['REDIRECT_URL'])) {
+        $url = $_SERVER['REDIRECT_URL'];
+    } else {
+        $url = $_SERVER['REQUEST_URI'];
+        list ($url,) = explode('?', $url, 2);
+        $url = urldecode($url);
+    }
+
+    $rewriteBase = str_replace('/', '\/', REWRITE_BASE);
     $matches = array();
-    if (preg_match('/^'.$rewriteBase.'([A-Za-z]+)\/([A-Za-z]+)\/number\/([0-9]+)$/', $url, $matches)) {
+    if (preg_match('/^' . $rewriteBase . '([A-Za-z]+)\/([A-Za-z]+)\/number\/([0-9]+)$/', $url, $matches)) {
         $_GLOBALS['route']['page'] = $matches[1];
         $_GLOBALS['route']['action'] = $matches[2];
         $_REQUEST['number'] = $matches[3];
-    } elseif (preg_match('/^'.$rewriteBase.'([A-Za-z0-9]+)\/([A-Za-z0-9]+)\/id\/(.*)$/', $url, $matches)) {
+    } elseif (preg_match('/^' . $rewriteBase . '([A-Za-z0-9]+)\/([A-Za-z0-9]+)\/id\/(.*)$/', $url, $matches)) {
         $_GLOBALS['route']['page'] = $matches[1];
         $_GLOBALS['route']['action'] = $matches[2];
         $_REQUEST['id'] = $matches[3];
-    } elseif (preg_match('/^'.$rewriteBase.'([A-Za-z0-9]+)\/([A-Za-z0-9]+)\/?/', $url, $matches)) {
+    } elseif (preg_match('/^' . $rewriteBase . '([A-Za-z0-9]+)\/([A-Za-z0-9]+)\/?/', $url, $matches)) {
         $_GLOBALS['route']['page'] = $matches[1];
         $_GLOBALS['route']['action'] = $matches[2];
-    } elseif (preg_match('/^'.$rewriteBase.'([A-Za-z0-9]+)\/?/', $url, $matches)) {
+    } elseif (preg_match('/^' . $rewriteBase . '([A-Za-z0-9]+)\/?/', $url, $matches)) {
         $_GLOBALS['route']['page'] = $matches[1];
     }
 }
@@ -121,9 +128,9 @@ try {
     }
 
     $controllerName = $page . 'Controller';
-    
+
     if (!file_exists(INC_PATH . "controller/{$page}.class.php")) {
-	throw new MissingException('CRITICAL ERROR: Page not found');
+        throw new MissingException('CRITICAL ERROR: Page not found');
     }
 
     /** @var $controller basicController */

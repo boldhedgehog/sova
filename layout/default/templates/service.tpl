@@ -75,7 +75,7 @@ $(document).ready(function(){
                     <tr><td><label for="serial_number{$service.service_id}">Зав.№</label></td></tr>
                     <tr><td><input type="text" id="serial_number{$service.service_id}" readonly="readonly" value="{$service.serial_number|escape}"/></td></tr>
 
-                    <tr><td><label for="logical_number{$service.service_id}">Лог.№</label></td></tr>
+                    <tr><td><label for="logical_number{$service.service_id}">Номер входу пристрою контролю та сповіщення</label></td></tr>
                     <tr><td><input type="text" id="logical_number{$service.service_id}" readonly="readonly" value="{$service.logical_number|escape}"/></td></tr>
 
                     <!-- Зона контролю -->
