@@ -1,12 +1,13 @@
 {assign var=settings value=$operator.settings}
-<div id="settings-dialog" title="Налаштування">
+<div id="settings-dialog" title="Налаштування &lt;{if isset($operator.name)}{$operator.name}{else}{$user.name}{/if}&gt;">
+    {include file="form/user.tpl"}
     <div>
         <form id="settings-form">
             {include file="form/formkey.tpl"}
             <fieldset>
-                <h2>ПНО</h2>
+                <legend><h2>ПНО</h2></legend>
                 <fieldset>
-                    <h3>Обслуговування</h3>
+                    <legend><h3>Обслуговування</h3></legend>
                     <ul>
                     {foreach name=hosts from=$database_hosts|@sortby:"-is_on_service,type,alias" item=hostItem}
                         {if $hostItem.type != 'pno'}{continue}{/if}
@@ -17,7 +18,9 @@
                         {/if}
                     {if isset($old_host_is_on_service) && $old_host_is_on_service neq $host_is_on_service}
                     </ul>
-                    <h3>Інше</h3>
+                </fieldset>
+                <fieldset>
+                    <legend><h3>Інше</h3></legend>
                     <ul>
                     {/if}
                         <li class="{if $hostItem.is_on_service}on-service{else}not-on-service{/if}">
