@@ -119,17 +119,6 @@ class hostController extends watcherController
 	$this->hostModel->viewlog();
     }*/
 
-    public function xajaxGetService($id)
-    {
-        $service = new serviceController();
-        return $service->xajaxGetService($id);
-    }
-
-    protected function _xajaxUpdateServiceTable($useLastcheck)
-    {
-        return;
-    }
-
     protected function _updateServiceTable($useLastcheck)
     {
         $this->jsonResponse->services = array();
@@ -140,44 +129,6 @@ class hostController extends watcherController
                     }
             }
         }
-    }
-
-    public function xajaxRefreshStatuses($useLastcheck = true)
-    {
-        parent::xajaxRefreshStatuses($useLastcheck);
-
-        // for quick and no service states were changed
-        if ($useLastcheck && !$this->services) {
-            return $this->objResponse;
-        }
-
-        // try to get host from DB
-        /* @var $host hostModel */
-        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
-
-        if ($host->getId()) {
-            $this->smarty->assign('host', $host->loadContacts()->loadServices()->loadNagiosData()->getData());
-            
-            $this->smarty->assign('isAjax', true);
-
-            $html = $this->smarty->fetch('inc/services_nagvis.tpl');
-            //$this->objResponse->script("$('div#nagvisServiceIconOverlay').replaceWith('$html')");
-            //$this->objResponse->script("alert(\"$html\")");
-
-            // update nagvis services
-            $this->objResponse->assign('nagvisServiceIconOverlay', 'innerHTML', $html);
-            $this->objResponse->script("$('img.host-map').each(function(){ scaleNagvisServiceIcons($(this)) }); initNagvisMap();");
-
-            // update services table
-            $html = $this->smarty->fetch('inc/services_table.tpl');
-            $this->objResponse->assign('services-container', 'innerHTML', $html);
-            //$this->objResponse->script("$('#services-container table tbody').html('" . self::jsEscapeString($html) . "')");
-            $this->objResponse->script('initServiceLinks()');
-            $this->objResponse->script('initTableFilter("table.services")');
-            $this->objResponse->script('applyFilters("table.services")');
-        }
-
-        return $this->objResponse;
     }
 
     public function refreshStatusesAction()
@@ -232,32 +183,6 @@ class hostController extends watcherController
         }
 
         return $this->jsonResponse;
-    }
-
-    /**
-     * @param $filter
-     * @return xajaxResponse
-     *
-     * @deprecated Use getLogRowsAction with jQuery AJAX
-     */
-    public function xajaxGetLogRows($filter)
-    {
-        $filter = $this->_setLogFilterDefaults($filter);
-
-        $this->objResponse = new xajaxResponse();
-
-        // try to get host from DB
-        /* @var $host hostModel */
-        $host = (is_numeric($this->_id)) ? $this->hostModel->load($this->_id) : $this->hostModel->loadByNagiosName($this->_id);
-
-        if ($host->getId()) {
-            $this->smarty->assign('nagiosObject', $host->loadNagiosLog($filter)->getData());
-
-            $html = $this->smarty->fetch('inc/log.tpl');
-            $this->objResponse->script("$('table.log tbody').html('" . self::jsEscapeString($html) . "')");
-        }
-
-        return $this->objResponse;
     }
 
     public function getLogRowsAction()

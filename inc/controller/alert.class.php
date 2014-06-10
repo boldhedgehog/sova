@@ -10,10 +10,7 @@ class alertController extends basicController {
     public function __construct() {
         $this->alertModel = new alertModel();
 
-        $this->xajax = $GLOBALS["singletones"]["xajax"];
         $this->smarty = $GLOBALS["singletones"]["smarty"];
-
-        $this->xajax->register(XAJAX_CALLABLE_OBJECT, $this);
 
         return parent::__construct();
     }
@@ -81,27 +78,6 @@ class alertController extends basicController {
         }
 
         $this->smarty->display("alert.tpl");
-    }
-
-    /**
-     * AJAX
-     */
-    public function xajaxConfirmOpen() {
-        $this->objResponse = new xajaxResponse();
-
-        if ($_REQUEST["id"] != $_SESSION["sova"]["alert_to_process"]) {
-            self::logError(sprintf("Не совпадают идентификаторы тревоги [%s] [%s]", $_REQUEST["id"], $_SESSION["sova"]["alert_to_process"]));
-        }
-
-        // set status for alert
-        if (($res = $this->alertModel->startProcessing($_REQUEST["id"], $_SESSION["operator"]["operator_id"], time())) instanceof PDOException) {
-            self::logError($res);
-        } else {
-            $this->objResponse->assign('alert_status', 'value', alertModel::STATUS_PROCESSING);
-	    $this->objResponse->assign('operator', 'value', $_SESSION["operator"]["name"]);
-        }
-
-        return $this->objResponse;
     }
 
 }

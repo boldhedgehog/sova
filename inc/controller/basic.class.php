@@ -7,19 +7,12 @@
  */
 
 require_once('smarty/Smarty.class.php');
-require_once('xajax_core/xajax.inc.php');
 
 class basicController
 {
 
     /* @var $smarty SovaSmarty */
     protected $smarty = false;
-
-    /* @var xajax xajax */
-    protected $xajax = false;
-
-    /* @var $objResponse xajaxResponse */
-    protected $objResponse;
 
     /** @var stdClass */
     protected $jsonResponse;
@@ -81,12 +74,10 @@ class basicController
 
     public function __construct()
     {
-        $this->xajax = $GLOBALS["singletones"]["xajax"];
         $this->smarty = $GLOBALS["singletones"]["smarty"];
 
         $this->requestUri = self::getEnvVar('REQUEST_URI');
 
-        $this->xajax->register(XAJAX_CALLABLE_OBJECT, $this);
         $this->smarty->assignByRef("controller", $this);
         $this->smarty->assign("controllerName", get_class($this));
 
@@ -108,9 +99,6 @@ class basicController
     {
         if ($this->smarty) {
             $this->smarty->assign('sessionNotifications', $this->sessionNotifications);
-            if ($this->xajax) {
-                $this->smarty->assign('xajax_javascript', $this->xajax->getJavascript());
-            }
         }
         return $this;
     }
@@ -131,15 +119,6 @@ class basicController
     public function getSmarty()
     {
         return $this->smarty;
-    }
-
-    /**
-     * Get xajax object
-     * @return xajax the XAJAX object
-     */
-    public function getXajax()
-    {
-        return $this->xajax;
     }
 
     public function getRequestUri()

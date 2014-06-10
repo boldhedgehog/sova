@@ -71,24 +71,6 @@ abstract class watcherController extends basicController
 
     abstract public function getRefreshUri();
 
-    /**
-     *
-     */
-    protected function _xajaxUpdateServiceTable($useLastcheck)
-    {
-        foreach ($this->services as $service) {
-            $service["md5"] = hashKey($service["host_name"] . $service["description"]);
-            // set service state class name
-            $this->objResponse->assign("service" . $service["md5"], "className", "service bgServiceState{$service["state"]}");
-            // set host image (icon)
-            //$this->objResponse->assign("hostIcon" . md5($service["host_name"]), "src", LAYOUT_LOGOS_URL . mklivestatusModel::getIconWithStatus($service));
-            // update service icons
-            //$this->objResponse->script("$('li#service{$service["md5"]} img.imgAcknowledged')." . ($service["acknowledged"] ? 'removeClass' : 'addClass') . "('hidden');");
-            //$this->objResponse->script("$('li#service{$service["md5"]} img.imgComments')." . (count($service["comments"]) ? 'removeClass' : 'addClass') . "('hidden');");
-            $this->objResponse->script("$('li#service{$service["md5"]} img.imgFlapping')." . ($service["is_flapping"] ? 'removeClass' : 'addClass') . "('hidden');");
-        }
-    }
-
     protected function _updateServiceTable($useLastcheck)
     {
         $usedServiceFields = array(
@@ -115,42 +97,6 @@ abstract class watcherController extends basicController
         $this->jsonResponse->services = $keys ? array_combine($keys, $this->services) : new stdClass();
     }
 
-    /**
-     * AJAX
-     */
-    public function xajaxRefreshStatuses($useLastcheck = true)
-    {
-        $time = time();
-        $this->objResponse = new xajaxResponse();
-
-        $lastCheck = $useLastcheck ? $_SESSION["livestatus"]["lastcheck"] : 0;
-        $this->services = $this->livestatusModel->refreshServices($lastCheck);
-
-        $this->_xajaxUpdateServiceTable($useLastcheck);
-
-        $this->hosts = $this->livestatusModel->refreshHosts($lastCheck);
-        /*
-        foreach ($this->hosts as $host) {
-            $host["md5"] = md5($host["name"]);
-            // set host class name
-            //$this->objResponse->assign("host" . $host["md5"], "className", "host bgHostState{$host["state"]}");
-        }
-        */
-
-        // check for new critical services
-
-        if (($alert = $this->_processCriticalSovaServices())) {
-            $this->objResponse->script("openAlertWindow({$alert["alert_id"]})");
-        }
-
-        if ($this->services || $this->hosts) {
-            $_SESSION['livestatus']['lastcheck'] = $time;
-            $this->objResponse->assign('sovaLastCheckValue', 'innerHTML', date(DATE_SOVA_DATETIME, $time));
-        }
-
-        return $this->objResponse;
-    }
-
     public function refreshStatusesAction()
     {
         $this->_useLastCheck = (boolean) isset($_POST['useLastCheck'])?$_POST['useLastCheck']:false;
@@ -171,27 +117,6 @@ abstract class watcherController extends basicController
         }
 
         return $this->jsonResponse;
-    }
-
-    public function xajaxGetService($key)
-    {
-        $this->objResponse = new xajaxResponse();
-
-        $service = new serviceModel();
-
-        $data = $service->loadByHostIdAndNagiosName($key)->loadNagiosData()->getData();
-
-        if (isset($data['nagios'][0]) && is_array($data['nagios'][0])) {
-            $nagiosData = $data['nagios'][0];
-            $key = $data['host_id'] . ':' . $nagiosData['description'];
-            $this->objResponse->script("nagiosWatcher.setServiceData('$key', " .
-                json_encode($data)
-                . ")");
-            /*$this->objResponse->script("console.log('$key', ".
-                    json_encode($data).')');*/
-        }
-
-        return $this->objResponse;
     }
 
     protected function _processCriticalSovaServices()

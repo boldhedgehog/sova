@@ -46,12 +46,12 @@ try {
 //var_dump($_SESSION["operator"]);
 
 // include XAJAX library
-require_once('../lib/xajax_core/xajax.inc.php');
-$xajax = new xajax();
-//$xajax->setFlag('debug',true);
-$xajax->configure("javascript URI", "/sova/js/");
+//require_once('../lib/xajax_core/xajax.inc.php');
+//$xajax = new xajax();
+////$xajax->setFlag('debug',true);
+//$xajax->configure("javascript URI", "/sova/js/");
 
-$GLOBALS["singletones"]["xajax"] = $xajax;
+//$GLOBALS["singletones"]["xajax"] = $xajax;
 
 // include Templates library
 require_once('../lib/smarty/Smarty.class.php');
@@ -176,6 +176,6 @@ try {
 };
 
 
-$xajax->processRequest();
+//$xajax->processRequest();
 
 ob_flush();
