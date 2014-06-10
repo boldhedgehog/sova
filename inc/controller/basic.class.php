@@ -217,7 +217,7 @@ class basicController
     /**
      *
      * @param string $code
-     * @param string $message
+     * @param bool|string $message
      */
     public static function httpError($code, $message = false)
     {
@@ -296,9 +296,6 @@ class basicController
 
     public function setCookie($name, $value) {
         // do not set cookies if it's an AJAX response
-        if ($this->objResponse) {
-            return;
-        }
         if (is_array($value) || is_object($value)) {
             $value = self::jsEscapeString(self::jsonEncode($value));
         }
