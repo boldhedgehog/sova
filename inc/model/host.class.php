@@ -44,6 +44,7 @@ class hostModel extends nagiosObjectModel
         $this->addField(new hostLocation($this));
         //$this->addField(new hostSearchSystemCode($this));
         $this->addField(new hostObjectId($this));
+        $this->addField(new hostLinkerId($this));
         $this->addField(new hostIsOnService($this));
         $this->addField(new hostSchemeImage($this));
         //$this->addField(new hostObjectTypeId($this));

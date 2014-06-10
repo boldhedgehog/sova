@@ -173,6 +173,7 @@
                 <tr>
                     <td><input type="text" id="host_location" readonly="readonly" value="{$host.location|escape}"/></td>
                 </tr>
+                {if $host.object_id neq ''}
                 <tr>
                     <td><label for="host_object_id">Унікальний код</label></td>
                 </tr>
@@ -181,6 +182,16 @@
                                title="Унікальний код ПНО, зареєстрованного в даному ЦСС-ПНО, тобто номер передавального пристрою"/>
                     </td>
                 </tr>
+                {/if}
+                {if $host.linker_id neq ''}
+                <tr>
+                    <td><label for="host_linker_id">Унікальний код ContactID</label></td>
+                </tr>
+                <tr>
+                    <td><input type="text" id="host_linker_id" readonly="readonly" value="{$host.linker_id|escape}"/>
+                    </td>
+                </tr>
+                {/if}
                 {*
                 <tr>
                     <td><label for="host_company">Суб'єкт господарскої діяльності</label></td>

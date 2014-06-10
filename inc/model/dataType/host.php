@@ -71,6 +71,11 @@ class hostObjectId extends stringDatatype
     protected $name = "object_id";
 }
 
+class hostLinkerId extends stringDatatype
+{
+    protected $name = "linker_id";
+}
+
 class hostObjectTypeId extends integerDatatype
 {
     protected $name = "object_type_id";
