@@ -8,14 +8,7 @@
 
         <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/jquery-1.5.1.min.js"></script>
 
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxcommon.js"></script>
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxwindows.js"></script>
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxtabbar.js"></script>
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxcontainer.js"></script>
-
         <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js"></script>
-
-{$xajax_javascript}
 
 	<script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/soundmanager2/soundmanager2-nodebug-jsmin.js"></script>
     

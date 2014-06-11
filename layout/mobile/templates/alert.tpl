@@ -4,19 +4,12 @@
         <title>Тривога - Сова - {$smarty.const.SITE_NAME}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" href="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.LAYOUT_NAME}/css/styles.css" type="text/css" />
-        <link rel="stylesheet" href="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.LAYOUT_NAME}/css/dhtmlxtabbar.css" type="text/css" />
 
         <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/jquery-1.5.1.min.js"></script>
-
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxcommon.js"></script>
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxwindows.js"></script>
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxtabbar.js"></script>
-        <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/dhtmlxcontainer.js"></script>
 
         <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js"></script>
 
 {if not $success and not $already_processed}
-{$xajax_javascript}
 
 	<script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/soundmanager2/soundmanager2-nodebug-jsmin.js"></script>
     

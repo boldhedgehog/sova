@@ -6,14 +6,11 @@
     <title>{if $pageTitle}{$pageTitle|escape} :: {/if}СОВА :: {$smarty.const.SITE_NAME}</title>
     <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
     <link rel="stylesheet" href="{$smarty.const.SOVA_BASE_URL}skin/{$smarty.const.DEFAULT_LAYOUT_NAME}/css/styles.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="{$smarty.const.SOVA_BASE_URL}js/jquery/jquery.cookie.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
 
     <script src="{$smarty.const.SOVA_BASE_URL}js/sova.js"></script>
     <script src="{$smarty.const.SOVA_BASE_URL}js/mobile.js"></script>
-
-    {$xajax_javascript}
 
     <script type="text/javascript">
     /* <![CDATA[ */

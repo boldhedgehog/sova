@@ -26,13 +26,6 @@ require_once('../../lib/functions.php');
 
 require_once('../../inc/autoloader.php');
 
-require_once('../../lib/xajax_core/xajax.inc.php');
-$xajax = new xajax();
-//$xajax->setFlag('debug',true);
-$xajax->configure("javascript URI", "/sova/js/");
-
-$GLOBALS["singletones"]["xajax"] = $xajax;
-
 // connect to DB
 require_once('../../inc/model/db.class.php');
 

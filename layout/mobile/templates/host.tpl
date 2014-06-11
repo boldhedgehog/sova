@@ -12,7 +12,6 @@
         {if !isset($host.scheme_image_name) || not $host.scheme_image_name}$hostTabs.tabs('disable', 'schemes');{/if}
 
         initServiceLinks();
-        initTableSearch('table.log', { searchFunction: xajax_{$controllerName}.xajaxGetLogRows });*/
     });
 
     //$(window).load(function() {
