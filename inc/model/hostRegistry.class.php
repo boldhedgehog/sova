@@ -41,6 +41,12 @@ class hostRegistryDescription extends stringDatatype {
     protected $caption = "Текст";
 }
 
+class hostRegistryImage extends imageDatatype
+{
+    protected $name = "image_name";
+    protected $caption = "Зображення";
+}
+
 /**
  *
  * @author a.yegorov
@@ -59,6 +65,7 @@ class hostRegistryModel extends basicModel {
                 ->addField(new hostRegistryDescription($this))
                 ->addField(new hostRegistryDatetime($this))
                 ->addField(new hostRegistryPublished($this))
+                ->addField(new hostRegistryImage($this))
                 ;
 
         return parent::__construct($dbms);

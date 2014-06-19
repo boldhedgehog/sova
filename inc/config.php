@@ -92,3 +92,4 @@ define('LAYOUT_CSS_URL', SOVA_BASE_URL . 'skin/' . DEFAULT_LAYOUT_NAME .'/css/')
 $GLOBALS["IMAGEMODIFIER_CHAINS"]["host-scheme-thumb"] = array(array("resize", array("width" => 256)));
 $GLOBALS["IMAGEMODIFIER_CHAINS"]["scheme_mobile"] = array(array("resize", array("width" => 290)));
 $GLOBALS["IMAGEMODIFIER_CHAINS"]["host-scheme-ymap"] = array(array("resize", array("width" => 128, "height" => 128)));
+$GLOBALS["IMAGEMODIFIER_CHAINS"]["host-registry-thumb"] = array(array("resize", array("width" => 64)));
