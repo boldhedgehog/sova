@@ -32,6 +32,12 @@ class notificationDeviceDeviceId extends keyDatatype
     protected $name = "device_id";
 }
 
+class notificationDeviceSchemeImage extends imageDatatype
+{
+    protected $name = "scheme_image_name";
+    protected $caption = "Схема";
+}
+
 /**
  *
  * @author ISM-UKRAINE\a.yegorov
@@ -49,6 +55,7 @@ class notificationDeviceModel extends basicModel {
             ->addField(new notificationDeviceZoneId($this))
             ->addField(new notificationDeviceName($this))
             ->addField(new notificationDeviceDeviceId($this))
+            ->addField(new notificationDeviceSchemeImage($this))
             ;
 
         $this->resetJoins()

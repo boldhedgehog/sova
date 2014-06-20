@@ -21,6 +21,21 @@
     </li>
     {/if}
 {/foreach}
+{foreach from=$host.notification_devices item=item}
+    {if $item.scheme_image_name}
+        {assign var="imagefile" value=$smarty.const.SITE_ROOT|cat:"media/scheme/"|cat:$item.scheme_image_name}
+        <li>
+            <h3>{$item.plas_zone_id|escape} - {$item.name|escape}</h3>
+            <a href="{$smarty.const.SOVA_BASE_URL}media/scheme/{$item.scheme_image_name}"
+               title="{$item.name|escape}"
+               target="_blank"><img src="{$smarty.const.SOVA_BASE_URL}{imagemodifier
+                img=$imagefile chain="host-scheme-thumb" output="url"
+                outputformat="jpeg"
+                }" alt="{$item.name|escape}"></a>
+        </li>
+    {/if}
+{/foreach}
+
 {foreach from=$host.services item=item}
     {if $item.scheme_image_name}
     {assign var="imagefile" value=$smarty.const.SITE_ROOT|cat:"media/scheme/"|cat:$item.scheme_image_name}
