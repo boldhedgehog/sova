@@ -226,15 +226,17 @@ class hostController extends watcherController
     }
 
     protected function _setLogFilterDefaults($filter = array()) {
-        if (!isset($filter['time']) || empty($filter['time'])) {
+        /*if (!isset($filter['time']) || empty($filter['time'])) {
             self::logError('set time');
             $filter['time'] = mktime(0, 0, 0) - 86400;
             $this->setCookie(self::$logFilterCookieName, self::jsonEncode($filter, JSON_FORCE_OBJECT));
-        }
+        }*/
 
         if (!isset($filter['time_end']) || empty($filter['time_end'])) {
             $filter['time_end'] = time();
         }
+
+        $filter['page'] = (int) self::getRequestVar('p', 1);
 
         return $filter;
     }

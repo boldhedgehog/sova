@@ -248,6 +248,10 @@ class hostModel extends nagiosObjectModel
 
         $nagiosLog->pageSize = static::LOG_LIMIT;
 
+        if (isset($filters['page']) && is_numeric($filters['page']) && $filters['page'] > 0) {
+            $nagiosLog->currentPage = $filters['page'];
+        }
+
         ini_set('memory_limit', '512M');
         $this->data['nagiosLog'] = $nagiosLog->getLog();
 

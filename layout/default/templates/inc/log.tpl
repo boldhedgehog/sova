@@ -5,6 +5,7 @@
 </tr>
 {/if*}
 {strip}
+{include file="inc/pager.tpl"}
 {foreach from=$logItems item=log name=log}
 <tr class="log-row state{$log.state}">
     <td class="line-number">{$smarty.foreach.log.iteration}</td>
@@ -18,4 +19,5 @@
 <th colspan="5" class="time-delimiter">Записи відсутні</th>
 </tr>
 {/foreach}
+{include file="inc/pager.tpl"}
 {/strip}
