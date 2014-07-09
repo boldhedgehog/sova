@@ -236,7 +236,7 @@ class hostController extends watcherController
             $filter['time_end'] = time();
         }
 
-        $filter['page'] = (int) self::getRequestVar('p', 1);
+        $filter['page'] = (int) self::getRequestVar('lp', 1);
 
         return $filter;
     }

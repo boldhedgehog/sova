@@ -883,13 +883,18 @@ div#status-body {
     box-shadow: 1px 1px 1px 1px #ededed;
     color: #fff;
     display: inline-block;
-    font-size: 14px;
-    line-height: 29px;
+    font-size: 12px;
+    line-height: 21px;
     margin: 0 2px;
-    min-width: 30px;
-    padding: 0;
+    min-width: 20px;
+    padding: 1px;
     text-align: center;
     background: none repeat scroll 0 0 #fff;
+    font-weight: normal;
+}
+
+.pager li.dots {
+    color: #000;
 }
 
 .pager a {
@@ -901,4 +906,8 @@ div#status-body {
 .pager .current {
     background: none repeat scroll 0 0 #0cf;
     border: 1px solid #1c74ba;
+}
+
+tr.pager th, tr.pager th:hover {
+    background-color: #fff;
 }

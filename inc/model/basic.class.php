@@ -236,7 +236,8 @@ class basicModel
             }
 
             if ($this->pageSize && $this->currentPage) {
-                $query .= (' LIMIT ' . (intval($this->currentPage) - 1) . ',' . intval($this->pageSize));
+                $query .= (' LIMIT ' . ((intval($this->currentPage) - 1) * intval($this->pageSize))
+                    . ',' . intval($this->pageSize));
             }
         }
 

@@ -5,13 +5,14 @@
 </tr>
 {/if*}
 {strip}
-    <tr>
-        <th colspan="5" class="pager">{include file="inc/pager.tpl" totalRows=$nagiosObject.nagiosLogTotalRows
+    <tr class="pager">
+        <th colspan="5">{include file="inc/pager.tpl" totalRows=$nagiosObject.nagiosLogTotalRows
             currentPage=$nagiosObject.nagiosLogCurrentPage pageSize=$nagiosObject.nagiosLogPageSize}</th>
     </tr>
     {foreach from=$logItems item=log name=log}
+        {assign var=lineNumber value=$smarty.foreach.log.iteration+($nagiosObject.nagiosLogCurrentPage-1)*$nagiosObject.nagiosLogPageSize}
         <tr class="log-row state{$log.state}">
-            <td class="line-number">{$smarty.foreach.log.iteration}</td>
+            <td class="line-number">{$lineNumber}</td>
             <td class="time">{$log.time|date_format:'%Y-%m-%d %H:%M:%S'}</td>
             <td>{if $log.service_notes}{$log.service_notes|escape}{else}{$log.service_description|escape}{/if}</td>
             <td class="state">{$log.state_text}</td>
@@ -22,8 +23,8 @@
             <th colspan="5" class="time-delimiter">Записи відсутні</th>
         </tr>
     {/foreach}
-    <tr>
-        <th colspan="5" class="pager">{include file="inc/pager.tpl" totalRows=$nagiosObject.nagiosLogTotalRows
+    <tr class="pager">
+        <th colspan="5">{include file="inc/pager.tpl" totalRows=$nagiosObject.nagiosLogTotalRows
             currentPage=$nagiosObject.nagiosLogCurrentPage pageSize=$nagiosObject.nagiosLogPageSize}</th>
     </tr>
 {/strip}
