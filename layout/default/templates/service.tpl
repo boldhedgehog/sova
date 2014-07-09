@@ -143,7 +143,7 @@ $(document).ready(function(){
                 </div>
                     </td>
                     </tr>
-                <table>
+                </table>
             </div>
         </div>
     </form>
