@@ -872,3 +872,33 @@ div#status-body {
     box-shadow: 0 0 30px #000000;
     border-radius: 3px;
 }
+
+.pager {
+    text-align: center;
+    list-style: none outside none;
+}
+
+.pager li {
+    border-radius: 5px;
+    box-shadow: 1px 1px 1px 1px #ededed;
+    color: #fff;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 29px;
+    margin: 0 2px;
+    min-width: 30px;
+    padding: 0;
+    text-align: center;
+    background: none repeat scroll 0 0 #fff;
+}
+
+.pager a {
+    text-decoration: none;
+    color: #000;
+    display: block;
+}
+
+.pager .current {
+    background: none repeat scroll 0 0 #0cf;
+    border: 1px solid #1c74ba;
+}

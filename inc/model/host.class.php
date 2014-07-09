@@ -254,6 +254,9 @@ class hostModel extends nagiosObjectModel
 
         ini_set('memory_limit', '512M');
         $this->data['nagiosLog'] = $nagiosLog->getLog();
+        $this->data['nagiosLogPageSize'] = $nagiosLog->pageSize;
+        $this->data['nagiosLogCurrentPage'] = $nagiosLog->currentPage;
+        $this->data['nagiosLogTotalRows'] = $nagiosLog->getCount();
 
         $this->data['daily_chart'] = $nagiosLog->getLogDailyData();
 

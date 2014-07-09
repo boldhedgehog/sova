@@ -131,6 +131,15 @@ class basicModel
         return $this->_postProcess($all);
     }
 
+    public function getCount()
+    {
+        list($query, $bindings) = $this->_formatGetAllQuery(true);
+
+        $all = $this->db->fetchOne($query, $bindings, true);
+
+        return isset($all['total_rows']) ? (int) $all['total_rows'] : null;
+    }
+
     public function _postProcess(&$result)
     {
         //$joins = array_merge($this->joinsBase, $this->joins);
@@ -154,7 +163,7 @@ class basicModel
      *
      * @return string Query
      */
-    protected function _formatGetAllQuery()
+    protected function _formatGetAllQuery($count = false)
     {
         $bindings = array();
         $filterCopy = array();
@@ -204,29 +213,31 @@ class basicModel
 
         $joinedFrom = ($joinedFrom) ? ("\n," . implode("\n,", $joinedFrom)) : "";
 
-        $query = "SELECT " . $this->_getSelectFields() . " $joinedFrom FROM `$this->tableName` AS `$this->alias`";
+        $query = "SELECT " . ($count ? ' count(*) AS total_rows' : $this->_getSelectFields()) . " $joinedFrom FROM `$this->tableName` AS `$this->alias`";
 
         if ($joinClauses) $query .= "\n" . implode("\n", $joinClauses);
         $query .= $conditions;
 
-        $orders = array_merge($this->ordersBase, $this->orders);
+        if (!$count) {
+            $orders = array_merge($this->ordersBase, $this->orders);
 
-        foreach ($orders as $key => $order) {
-            if (strpos('.', $key)) {
-                list($alias, $field) = explode('.', $key);
-            } else {
-                $alias = $this->alias;
-                $field = $key;
+            foreach ($orders as $key => $order) {
+                if (strpos('.', $key)) {
+                    list($alias, $field) = explode('.', $key);
+                } else {
+                    $alias = $this->alias;
+                    $field = $key;
+                }
+                $orders[$key] = "`$alias`.`$field` $order";
             }
-            $orders[$key] = "`$alias`.`$field` $order";
-        }
 
-        if ($orders) {
-            $query .= ' ORDER BY ' . implode(',', $orders);
-        }
+            if ($orders) {
+                $query .= ' ORDER BY ' . implode(',', $orders);
+            }
 
-        if ($this->pageSize && $this->currentPage) {
-            $query .= (' LIMIT ' . (intval($this->currentPage) - 1) . ',' . intval($this->pageSize));
+            if ($this->pageSize && $this->currentPage) {
+                $query .= (' LIMIT ' . (intval($this->currentPage) - 1) . ',' . intval($this->pageSize));
+            }
         }
 
         return array($query, $bindings);
