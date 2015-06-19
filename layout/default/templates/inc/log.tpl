@@ -17,6 +17,7 @@
             <td>{if $log.service_notes}{$log.service_notes|escape}{else}{$log.service_description|escape}{/if}</td>
             <td class="state">{$log.state_text}</td>
             <td>{$log.plugin_output|escape}</td>
+            <td class="last">{if isset($log['duration'])}<span title="{$log.duration|human_interval}">{$log.duration|human_interval:true}</span>{else}&nbsp;{/if}</td>
         </tr>
         {foreachelse}
         <tr>

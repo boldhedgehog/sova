@@ -447,6 +447,7 @@
                     <th class="name-service_notes">Сервіс</th>
                     <th class="state name-state">Стан</th>
                     <th class="name-plugin_output">Повідомлення</th>
+                    <th class="time nofilter" title="Тривалість">Тр-ть</th>
                 </tr>
                 </thead>
                 <tbody>

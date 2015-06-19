@@ -60,6 +60,10 @@ class nagioslogMessage extends textDatatype
     protected $name = "message";
 }
 
+class nagioslogDuration extends integerDatatype {
+    protected $name = "duration";
+}
+
 /**
  *
  */
@@ -81,7 +85,8 @@ class nagioslogModel extends nagiosObjectModel
                 ->addField(new nagioslogHostId($this))
                 ->addField(new nagioslogServiceId($this))
                 ->addField(new nagioslogPluginOutput($this))
-                ->addField(new nagioslogMessage($this));
+                ->addField(new nagioslogMessage($this))
+                ->addField(new nagioslogDuration($this));
 
         return parent::__construct($dbms);
     }
