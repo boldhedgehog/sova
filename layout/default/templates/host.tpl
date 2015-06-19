@@ -9,14 +9,13 @@
 
         {if $host.scheme_image_name}
             {assign var="host_imagefile" value=$smarty.const.SITE_ROOT|cat:"media/scheme/"|cat:$host.scheme_image_name}
-            /*{capture assign="host_image_html"}
+            /* {capture assign="host_image_html"}
                 <a href="{$smarty.const.SOVA_BASE_URL}media/scheme/{$host.scheme_image_name}"
                 rel="gallery{$host.host_id}" title="{$host.alias|escape}"
                 target="_blank" class="gallery"><img src="{$smarty.const.SOVA_BASE_URL}{imagemodifier
                 img=$host_imagefile chain="host-scheme-ymap" output="url"
-                outputformat="jpeg"
-                }" alt="{$host.alias|escape}"></a>
-                {/capture}*/
+                outputformat="jpeg"}" alt="{$host.alias|escape}"></a>
+                {/capture} */
         {else}
             {assign var="host_imagefile" value=""}
         {/if}
@@ -30,8 +29,7 @@
                 rel="gallery{$host.host_id}" title="{$host.alias|cat:": "|cat:$item.name|escape}"
                 target="_blank" class="gallery"><img src="{$smarty.const.SOVA_BASE_URL}{imagemodifier
                         img=$imagefile chain="host-scheme-ymap" output="url"
-                        outputformat="jpeg"
-                        }" alt="{$item.name|escape}"></a>
+                        outputformat="jpeg"}" alt="{$item.name|escape}"></a>
                 {/capture}*/
             {else}
                 {assign var="imagefile" value=""}
@@ -139,7 +137,7 @@
     });
     /* ]]> */
 </script>
-<!-- {*include file="inc/host_log_chart.tpl"*} -->
+{include file="inc/host_log_chart.tpl"}
 <div id="host{$host.host_id}" class="host">
     <div class="tabs">
         <ul>

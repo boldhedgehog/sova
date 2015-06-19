@@ -29,39 +29,41 @@
         var formatter = new google.visualization.NumberFormat({ pattern: '00' });
         formatter.format(data, 0);
 
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-        chart.draw(
+        var dayChart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        var optOptions = {
+            title: 'Статуси по годинах',
+            colors: ['#3f0', '#ff0', '#f00', '#aaa'],
+            legendTextStyle: { color:'#000' },
+            bar: { groupWidth: '80%' },
+            chartArea: {
+                left: 0,
+                top: 40,
+                height: '85%',
+                width: '100%'
+            },
+            legend: {
+                position: 'in',
+                alignment: 'center'
+            },
+            hAxis: {
+                title: '',
+                titleTextStyle: { color: '#5c5c5c' },
+                titlePosition: 'in',
+                format: '00',
+                gridlines: { count: 24 }
+            },
+            vAxis: {
+                logScale: false,
+                textPosition: 'in'
+            },
+            width: 750,
+            height: 750/3*2,
+            isStacked: true
+        };
+
+        dayChart.draw(
                 data,
-                {
-                    title: 'Статусы по годинах',
-                    colors: ['#3f0', '#ff0', '#f00', '#aaa'],
-                    legendTextStyle: { color:'#000' },
-                    bar: { groupWidth: '80%' },
-                    chartArea: {
-                        left: 0,
-                        top: 40,
-                        height: '85%',
-                        width: '100%'
-                    },
-                    legend: {
-                        position: 'in',
-                        alignment: 'center'
-                    },
-                    hAxis: {
-                        title: '',
-                        titleTextStyle: { color: '#5c5c5c' },
-                        titlePosition: 'in',
-                        format: '00',
-                        gridlines: { count: 24 }
-                    },
-                    vAxis: {
-                        logScale: false,
-                        textPosition: 'in'
-                    },
-                    width: 750,
-                    height: 750/3*2,
-                    isStacked: true
-                }
+                optOptions
         );
     }
     //]]>

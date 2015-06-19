@@ -25,6 +25,9 @@
 
     <script type="text/javascript" src="{$smarty.const.SOVA_BASE_URL}js/sova.js?v=14032015"></script>
 
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
     <script type="text/javascript">
     /* <![CDATA[ */
 	$(document).ready(function() {

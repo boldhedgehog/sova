@@ -321,11 +321,11 @@ class mklivestatusModel extends basicModel
         list($address, $port) = explode(':', MKLIVE_SOCKET_ADDRESS);
         $this->socket = ($port) ? socket_create(AF_INET, SOCK_STREAM, SOL_TCP) : socket_create(AF_UNIX, SOCK_STREAM, 0);
         if (!$this->socket)
-            throw new socketException("Не удалось создать сокет");
+            throw new socketException("Не удалось создать сокет " . MKLIVE_SOCKET_ADDRESS);
 
         $result = socket_connect($this->socket, $address, $port);
         if (!$result)
-            throw new socketException("Не удалось открыть сокет");
+            throw new socketException("Не удалось открыть сокет " . MKLIVE_SOCKET_ADDRESS);
 
         return $this->socket;
     }
