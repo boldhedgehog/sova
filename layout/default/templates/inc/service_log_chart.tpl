@@ -33,7 +33,7 @@
         chart.draw(
                 data,
                 {
-                    title: 'Статусы по годинах',
+                    title: 'Зміна статусів по годинах',
                     colors: ['#3f0', '#ff0', '#f00', '#aaa'],
                     legendTextStyle: { color:'#000' },
                     bar: { groupWidth: '80%' },

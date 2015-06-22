@@ -452,7 +452,6 @@
                 {include file="inc/log.tpl" logItems=$host.nagiosLog nagiosObject=$host}
                 </tbody>
             </table>
-        {*<input id="previous-log" type="button" value="більше ..." onclick="xajax_{$controllerName}.xajaxGetLogRows(logDayOffset, 1);" class="next-button" />*}
             <table>
                 <tr>
                     <td colspan="5">
