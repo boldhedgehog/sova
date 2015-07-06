@@ -20,6 +20,7 @@ $(document).ready(function(){
 {/if}
     //]]>
 </script>
+{*{include file="inc/service_log_chart_changes.tpl"}*}
     <div id="service{$service.service_id}" class="service">
     <form name="service" action="" class="alert" >
         <div class="service-tabs ui-tabs-hide">
@@ -140,6 +141,14 @@ $(document).ready(function(){
                     <td>
                 <div class=chart>
                     <div id="chart_div"></div>
+                </div>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                <div class=chart>
+                    {include file="inc/service_log_chart_durations.tpl"}
+                    <div id="chart_div_durations"></div>
                 </div>
                     </td>
                     </tr>

@@ -213,7 +213,6 @@ class serviceModel extends nagiosObjectModel {
             $this->data['position'] .'/'. $this->data['communication_device']['logical_number']
             .':' . $this->data['sensor_type']['name'] .' '. $this->data['alias']
             : $this->getData('alias');
-        ;
     }
 
     protected function _assureHostLoaded($key = NULL) {
@@ -291,6 +290,125 @@ ORDER BY HOUR(FROM_UNIXTIME(`time`))  ASC;';
 
         return $result;
 
+    }
+
+    public function getStateTimelineData($key = null, $from = 0, $to = null) {
+        if (!$this->assureLoaded($key)) {
+            return false;
+        }
+
+        if (!$to) {
+            $to = time();
+        }
+
+        // find latest time before current time
+        $query = 'SELECT `time`
+FROM `nagioslog`
+WHERE `service_id` = :service_id AND `time` < :from
+ORDER BY `time` DESC LIMIT 0,1';
+
+        $result = $this->getDb()->fetchOne(
+            $query,
+            array(
+                'service_id' => (int)$this->data['service_id'],
+                'from' => (int) $from
+            )
+        );
+
+        $beforeTime = ($result && isset($result['time'])) ? $result['time'] : $from;
+
+        // find latest time with duration
+        $query = 'SELECT `time`
+FROM `nagioslog`
+WHERE `service_id` = :service_id AND `duration` IS NOT NULL
+ORDER BY `time` DESC LIMIT 0,1';
+
+        $result = $this->getDb()->fetchOne(
+            $query,
+            array(
+                'service_id' => (int)$this->data['service_id'],
+            )
+        );
+
+        $beforeTime = max(array($result['time'], $beforeTime));
+
+        $query = "SELECT CASE `state`
+WHEN 0 THEN 'OK'
+WHEN 1 THEN 'CRITICAL'
+WHEN 2 THEN 'WARNING'
+ELSE 'UNKNOWN'
+END AS `state_label`,
+`time` AS `start`,
+IF(`duration` IS NOT NULL, `time`+`duration`, :to) AS `end`
+FROM `nagioslog` WHERE `service_id` = :service_id AND `time` >= :from
+ORDER BY `state` ASC, `time` ASC";
+//var_dump($query, $this->data['service_id'], $from, $beforeTime);
+        $result = $this->getDb()->fetchAll(
+            $query,
+            array(
+                'service_id' => (int)$this->data['service_id'],
+                'from' => (int) $beforeTime,
+                'to' => $to
+            )
+        );
+
+        if ($result) {
+            /*$first = $result[0];
+
+            if ($first['start'] > $beforeTime) {
+                array_unshift($result, array(
+                    'state_label' => $first['state_label'],
+                    'start' => $beforeTime,
+                    'end' => $first['start']
+                ));
+            }*/
+
+            /*$keys = array();
+            foreach ($result as $array) {
+                $keys[] = $array['hour'];
+            }
+            $result = array_combine($keys, $result);
+            for ($i=(int)(floor($from / 60) * 60); $i <= $to; $i += 60) {
+                if (!isset($result[$i])) {
+                    $result[$i] = array(
+                        'hour' => $i,
+                        'OK' => 0,
+                        'WARNING' => 0,
+                        'CRITICAL' => 0,
+                        'UNKNOWN' => 0,
+                    );
+                }
+            }
+            ksort($result);*/
+        }
+
+        return $result;
+    }
+
+    public function getStatesForPeriod($key = null, $from = 0, $to = null) {
+        if (!$this->assureLoaded($key)) {
+            return false;
+        }
+
+        if (!$to) {
+            $to = time();
+        }
+
+        $query = 'SELECT DISTINCT `state`
+FROM `nagioslog`
+WHERE `service_id` = :service_id AND `time` >= :from AND `time` <= :to
+';
+
+        $result = $this->getDb()->fetchAll(
+            $query,
+            array(
+                'service_id' => (int)$this->data['service_id'],
+                'from' => (int) $from,
+                'to' => (int) $to
+            )
+        );
+
+        return array_map(function($row) { return $row['state']; }, $result);
     }
 
     public function importFromNagios($data) {

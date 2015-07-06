@@ -60,7 +60,19 @@ class serviceController extends watcherController
         $data = $service->loadCards()->loadHost()->loadNagiosData()->loadNagiosLog()->getData();
 
         if (!self::isMobile()) {
-            $data['daily_chart'] = $service->getDailyStateData();
+            $this->smarty->clearAllCache();
+            //$data['daily_chart'] = $service->getDailyStateData();
+            $fromTime = self::getRequestVar('duration_period', strtotime("1 month ago", time()));
+            $this->smarty->assign('duration_periods', array(
+                'hour' => time() - 3600,
+                '24' => time() - 24*3600,
+                'day' => strtotime("midnight", time()),
+                'week' => strtotime("1 week ago", time()),
+                'month' => strtotime("1 month ago", time())
+            ));
+            $data['duration_period'] = $fromTime;
+            $data['duration_chart'] = $service->getStateTimelineData(null, $fromTime);
+            $data['duration_chart_states'] = $service->getStatesForPeriod(null, $fromTime);
         }
 
         $data['name'] = $service->getName();

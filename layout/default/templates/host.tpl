@@ -137,7 +137,7 @@
     });
     /* ]]> */
 </script>
-{include file="inc/host_log_chart.tpl"}
+{*include file="inc/host_log_chart.tpl"*}
 <div id="host{$host.host_id}" class="host">
     <div class="tabs">
         <ul>
