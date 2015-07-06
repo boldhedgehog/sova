@@ -104,8 +104,6 @@ class serviceController extends watcherController
         $fromTime = self::getRequestVar('duration_period', strtotime("midnight", time()));
         $rows = $service->getStateTimelineData(null, $fromTime);
 
-        //$this->smarty->assign('timeline', $rows);
-
         header('Content-Type: application/json');
         $this->jsonResponse = new stdClass();
 
@@ -113,8 +111,6 @@ class serviceController extends watcherController
         $this->jsonResponse->states = $service->getStatesForPeriod(null, $fromTime);
 
         return $this->jsonResponse;
-
-        //$this->smarty->display('inc/service_log_chart_durations_timeline.tpl');
     }
 
     public function ajaxAction()
@@ -150,11 +146,14 @@ class serviceController extends watcherController
     {
         return array(
             'Година' => time() - 3600,
+            '6 годин' => time() - 6 * 3600,
             '24 години' => time() - 24 * 3600,
             'Початок доби' => strtotime("midnight", time()),
             'Неділя' => strtotime("1 week ago", time()),
             'Місяць' => strtotime("1 month ago", time()),
-            '3 Місяці' => strtotime("3 months ago", time())
+            '3 Місяці' => strtotime("3 months ago", time()),
+            '6 Місяців' => strtotime("6 months ago", time()),
+            '12 Місяців' => strtotime("12 months ago", time()),
         );
     }
 

@@ -74,10 +74,13 @@
 
                 this.chartView = new google.visualization.Timeline(document.getElementById('chart_div_durations'));
 
+                {if isset($service['duration_chart']) && is_array($service['duration_chart']) && $service['duration_chart']}
                 this.chartView.draw(
                         this.chart,
                         this.chartOptions
                 );
+                {/if}
+
             },
 
             refresh: function(data) {
@@ -126,7 +129,6 @@
             }
         };
         // colors: ['#3f0', '#ff0', '#f00', '#aaa'],
-        {if isset($service['duration_chart']) && is_array($service['duration_chart']) && $service['duration_chart']}
 
         {if in_array(0, $service['duration_chart_states'])}serviceDurationsChart.chartOptions.colors.push('#3f0');{/if}
         {if in_array(1, $service['duration_chart_states'])}serviceDurationsChart.chartOptions.colors.push('#ff0');{/if}
@@ -143,7 +145,6 @@
         google.setOnLoadCallback(function() {
             serviceDurationsChart.draw();
         });
-        {/if}
 
         $(document).ready(function() {
             $('#duration-chart-period').change(function() {
@@ -163,7 +164,6 @@
 
                         serviceDurationsChart.refresh(response);
                     }
-                    console.log(response, $(this).responseText);
                 }).always(function() {
                     select.prop('disabled', false);
                 });
