@@ -304,7 +304,7 @@ ORDER BY HOUR(FROM_UNIXTIME(`time`))  ASC;';
         // find latest time before current time
         $query = 'SELECT `time`
 FROM `nagioslog`
-WHERE `service_id` = :service_id AND `time` < :from
+WHERE `service_id` = :service_id AND `time` < :from AND `duration` IS NOT NULL
 ORDER BY `time` DESC LIMIT 0,1';
 
         $result = $this->getDb()->fetchOne(
@@ -315,34 +315,19 @@ ORDER BY `time` DESC LIMIT 0,1';
             )
         );
 
-        $beforeTime = ($result && isset($result['time'])) ? $result['time'] : $from;
-
-        // find latest time with duration
-        $query = 'SELECT `time`
-FROM `nagioslog`
-WHERE `service_id` = :service_id AND `duration` IS NOT NULL
-ORDER BY `time` DESC LIMIT 0,1';
-
-        $result = $this->getDb()->fetchOne(
-            $query,
-            array(
-                'service_id' => (int)$this->data['service_id'],
-            )
-        );
-
-        $beforeTime = max(array($result['time'], $beforeTime));
+        $beforeTime = ($result && isset($result['time'])) ? max($result['time'], $from) : $from;
 
         $query = "SELECT CASE `state`
 WHEN 0 THEN 'OK'
-WHEN 1 THEN 'CRITICAL'
-WHEN 2 THEN 'WARNING'
+WHEN 1 THEN 'WARNING'
+WHEN 2 THEN 'CRITICAL'
 ELSE 'UNKNOWN'
 END AS `state_label`,
 `time` AS `start`,
 IF(`duration` IS NOT NULL, `time`+`duration`, :to) AS `end`
 FROM `nagioslog` WHERE `service_id` = :service_id AND `time` >= :from
 ORDER BY `state` ASC, `time` ASC";
-//var_dump($query, $this->data['service_id'], $from, $beforeTime);
+
         $result = $this->getDb()->fetchAll(
             $query,
             array(
@@ -408,7 +393,7 @@ WHERE `service_id` = :service_id AND `time` >= :from AND `time` <= :to
             )
         );
 
-        return array_map(function($row) { return $row['state']; }, $result);
+        return array_map(function($row) { return (int) $row['state']; }, $result);
     }
 
     public function importFromNagios($data) {

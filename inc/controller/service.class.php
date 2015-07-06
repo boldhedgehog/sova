@@ -62,14 +62,8 @@ class serviceController extends watcherController
         if (!self::isMobile()) {
             $this->smarty->clearAllCache();
             //$data['daily_chart'] = $service->getDailyStateData();
-            $fromTime = self::getRequestVar('duration_period', strtotime("1 month ago", time()));
-            $this->smarty->assign('duration_periods', array(
-                'hour' => time() - 3600,
-                '24' => time() - 24*3600,
-                'day' => strtotime("midnight", time()),
-                'week' => strtotime("1 week ago", time()),
-                'month' => strtotime("1 month ago", time())
-            ));
+            $fromTime = self::getRequestVar('duration_period', strtotime("midnight", time()));
+            $this->smarty->assign('duration_periods', $this->_getChartPeriods());
             $data['duration_period'] = $fromTime;
             $data['duration_chart'] = $service->getStateTimelineData(null, $fromTime);
             $data['duration_chart_states'] = $service->getStatesForPeriod(null, $fromTime);
@@ -96,6 +90,33 @@ class serviceController extends watcherController
         }
     }
 
+    public function timelineAction()
+    {
+        // try to get host from DB
+        /* @var $service serviceModel */
+        $service = (is_numeric($this->_id)) ? $this->serviceModel->load($this->_id) : $this->serviceModel->loadByHostIdAndNagiosName($this->_id);
+
+        if (!$service->getId()) {
+            self::httpError(404);
+            die;
+        }
+
+        $fromTime = self::getRequestVar('duration_period', strtotime("midnight", time()));
+        $rows = $service->getStateTimelineData(null, $fromTime);
+
+        //$this->smarty->assign('timeline', $rows);
+
+        header('Content-Type: application/json');
+        $this->jsonResponse = new stdClass();
+
+        $this->jsonResponse->data = $rows;
+        $this->jsonResponse->states = $service->getStatesForPeriod(null, $fromTime);
+
+        return $this->jsonResponse;
+
+        //$this->smarty->display('inc/service_log_chart_durations_timeline.tpl');
+    }
+
     public function ajaxAction()
     {
         $this->_isAjax = true;
@@ -120,6 +141,21 @@ class serviceController extends watcherController
         }
 
         echo "done";
+    }
+
+    /**
+     * @return array
+     */
+    protected function _getChartPeriods()
+    {
+        return array(
+            'Година' => time() - 3600,
+            '24 години' => time() - 24 * 3600,
+            'Початок доби' => strtotime("midnight", time()),
+            'Неділя' => strtotime("1 week ago", time()),
+            'Місяць' => strtotime("1 month ago", time()),
+            '3 Місяці' => strtotime("3 months ago", time())
+        );
     }
 
 }
