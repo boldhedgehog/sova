@@ -149,7 +149,7 @@ class serviceController extends watcherController
             '6 годин' => time() - 6 * 3600,
             '24 години' => time() - 24 * 3600,
             'Початок доби' => strtotime("midnight", time()),
-            'Неділя' => strtotime("1 week ago", time()),
+            'Тиждень' => strtotime("1 week ago", time()),
             'Місяць' => strtotime("1 month ago", time()),
             '3 Місяці' => strtotime("3 months ago", time()),
             '6 Місяців' => strtotime("6 months ago", time()),
