@@ -1,4 +1,3 @@
-{if isset($service['duration_chart']) && is_array($service['duration_chart']) && $service['duration_chart']}
     <script type="text/javascript">
         //<![CDATA[
         // Load the Visualization API and the timeline package.
@@ -127,6 +126,7 @@
             }
         };
         // colors: ['#3f0', '#ff0', '#f00', '#aaa'],
+        {if isset($service['duration_chart']) && is_array($service['duration_chart']) && $service['duration_chart']}
 
         {if in_array(0, $service['duration_chart_states'])}serviceDurationsChart.chartOptions.colors.push('#3f0');{/if}
         {if in_array(1, $service['duration_chart_states'])}serviceDurationsChart.chartOptions.colors.push('#ff0');{/if}
@@ -143,6 +143,7 @@
         google.setOnLoadCallback(function() {
             serviceDurationsChart.draw();
         });
+        {/if}
 
         $(document).ready(function() {
             $('#duration-chart-period').change(function() {
@@ -171,7 +172,7 @@
 
         //]]>
     </script>
-{/if}
+
 {if isset($service['duration_period'])}
     <label for="duration-chart-period">Період</label>
     <select name="duration_period" id="duration-chart-period">
