@@ -15,3 +15,9 @@ function hashKey($value)
 
     return hash('crc32', $value);
 }
+
+if (!function_exists('_')) {
+    function _($string) {
+        return $string;
+    }
+}
