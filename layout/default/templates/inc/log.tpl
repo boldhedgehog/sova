@@ -1,9 +1,4 @@
 {assign var=logItems value=$logItems|default:$nagiosObject.nagiosLog}
-{*if $append}
-<tr>
-<th colspan="4" class="time-delimiter">{$fromTime|date_format:'%Y-%m-%d'}</th>
-</tr>
-{/if*}
 {strip}
     <tr class="pager">
         <th colspan="5">{include file="inc/pager.tpl" totalRows=$nagiosObject.nagiosLogTotalRows
@@ -14,7 +9,11 @@
         <tr class="log-row state{$log.state}">
             <td class="line-number">{$lineNumber}</td>
             <td class="time">{$log.time|date_format:'%Y-%m-%d %H:%M:%S'}</td>
-            <td>{if $log.service_notes}{$log.service_notes|escape}{else}{$log.service_description|escape}{/if}</td>
+            <td>
+                {if isset($log.service_id)}<a href="{$smarty.const.SOVA_BASE_URL}service/index/id/{$log.host_id}:{$log.service_description|escape:"url"}" class="serviceLink">{/if}
+                {if $log.service_notes}{$log.service_notes|escape}{else}{$log.service_description|escape}{/if}
+                {if isset($log.service_id)}</a>{/if}
+            </td>
             <td class="state">{$log.state_text}</td>
             <td>{$log.plugin_output|escape}</td>
             <td class="last">{if isset($log['duration'])}<span title="{$log.duration|human_interval}">{$log.duration|human_interval:true}</span>{else}

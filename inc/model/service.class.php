@@ -301,21 +301,7 @@ ORDER BY HOUR(FROM_UNIXTIME(`time`))  ASC;';
             $to = time();
         }
 
-        // find latest time before current time
-        $query = 'SELECT `time`
-FROM `nagioslog`
-WHERE `service_id` = :service_id AND `time` < :from AND `duration` IS NOT NULL
-ORDER BY `time` DESC LIMIT 0,1';
-
-        $result = $this->getDb()->fetchOne(
-            $query,
-            array(
-                'service_id' => (int)$this->data['service_id'],
-                'from' => (int) $from
-            )
-        );
-
-        $beforeTime = ($result && isset($result['time'])) ? max($result['time'], $from) : $from;
+        $beforeTime = $this->_getFromTime($from);
 
         $query = "SELECT CASE `state`
 WHEN 0 THEN 'OK'
@@ -337,34 +323,8 @@ ORDER BY `state` ASC, `time` ASC";
             )
         );
 
-        if ($result) {
-            /*$first = $result[0];
-
-            if ($first['start'] > $beforeTime) {
-                array_unshift($result, array(
-                    'state_label' => $first['state_label'],
-                    'start' => $beforeTime,
-                    'end' => $first['start']
-                ));
-            }*/
-
-            /*$keys = array();
-            foreach ($result as $array) {
-                $keys[] = $array['hour'];
-            }
-            $result = array_combine($keys, $result);
-            for ($i=(int)(floor($from / 60) * 60); $i <= $to; $i += 60) {
-                if (!isset($result[$i])) {
-                    $result[$i] = array(
-                        'hour' => $i,
-                        'OK' => 0,
-                        'WARNING' => 0,
-                        'CRITICAL' => 0,
-                        'UNKNOWN' => 0,
-                    );
-                }
-            }
-            ksort($result);*/
+        if (count($result) == 1 && (int) $result[0]['start'] < $from) {
+            $result[0]['start'] = $from;
         }
 
         return $result;
@@ -379,6 +339,8 @@ ORDER BY `state` ASC, `time` ASC";
             $to = time();
         }
 
+        $beforeTime = $this->_getFromTime($from);
+
         $query = 'SELECT DISTINCT `state`
 FROM `nagioslog`
 WHERE `service_id` = :service_id AND `time` >= :from AND `time` <= :to
@@ -388,7 +350,7 @@ WHERE `service_id` = :service_id AND `time` >= :from AND `time` <= :to
             $query,
             array(
                 'service_id' => (int)$this->data['service_id'],
-                'from' => (int) $from,
+                'from' => (int) $beforeTime,
                 'to' => (int) $to
             )
         );
@@ -401,6 +363,47 @@ WHERE `service_id` = :service_id AND `time` >= :from AND `time` <= :to
     }
 
     protected function _install() {
+    }
+
+    /**
+     * find latest time before current time
+     *
+     * @param $from
+     * @return array
+     */
+    protected function _getFromTime($from)
+    {
+        $query = 'SELECT `time`
+FROM `nagioslog`
+WHERE `service_id` = :service_id AND `time` >= :from /*AND `duration` IS NOT NULL*/
+ORDER BY `time` ASC LIMIT 0, 1';
+
+        $result = $this->getDb()->fetchOne(
+            $query,
+            array(
+                'service_id' => (int)$this->data['service_id'],
+                'from' => (int) $from
+            )
+        );
+
+        if ($result && isset($result['time'])) {
+            return $result['time'];
+        }
+
+        $query = 'SELECT `time`
+FROM `nagioslog`
+WHERE `service_id` = :service_id AND `time` < :from /*AND `duration` IS NOT NULL*/
+ORDER BY `time` DESC LIMIT 0, 1';
+
+        $result = $this->getDb()->fetchOne(
+            $query,
+            array(
+                'service_id' => (int)$this->data['service_id'],
+                'from' => (int) $from
+            )
+        );
+
+        return ($result && isset($result['time'])) ? min((int)$result['time'], $from) : $from;
     }
 
 }
