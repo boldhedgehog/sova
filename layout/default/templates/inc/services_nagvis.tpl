@@ -36,6 +36,7 @@
                 <div class="serviceFloat">
                 <table cellspacing="0" cellpadding="1" border="1">
                     <tr><th colspan="2">{$serviceName|escape}</th></tr>
+                    {if isset($dbService) and $dbService and $dbService.alias}<tr><th colspan="2">{$dbService.alias|escape}</th></tr>{/if}
                     {if isset($dbService['zone']['name'])}<tr><th colspan="2">{$dbService['zone']['name']|escape}</th></tr>{/if}
                     <tr><td class="caption caption{$nagios_service.state}">Стан</td><td class="bgServiceState{$nagios_service.state}">{$nagios_service.state_text}</td></tr>
                     <tr><td class="caption">Останнє оновлення</td><td>{$nagios_service.last_check|date_format:'%Y-%m-%d %H:%M:%S'}</td></tr>
