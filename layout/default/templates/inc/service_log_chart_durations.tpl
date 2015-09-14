@@ -179,5 +179,6 @@
     {foreach from=$duration_periods item=value key=label}
         <option value="{$value}" {if $service['duration_period'] eq $value} selected="selected" {/if}>{$label}</option>
     {/foreach}
+        <option value="custom">Період</option>
 </select>
 {/if}

@@ -11,7 +11,7 @@
         <tr class="{if $smarty.foreach.current.iteration % 2}odd{else}even{/if}{if $smarty.foreach.current.last} last{/if}{if $smarty.foreach.current.first} first{/if}">
             <td class="time">{$item.datetime|escape}</td>
             <td>{$item.person|escape}</td>
-            <td>{$item.description}</td>
+            <td>{$item.description|nl2br}</td>
             <td>
                 {if $item.image_name}
                     {assign var="registry_image" value=$smarty.const.SITE_ROOT|cat:"media/registry/"|cat:$item.image_name}
