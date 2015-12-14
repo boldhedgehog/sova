@@ -32,7 +32,7 @@
                 {assign var=serviceName value=$service.display_name}
             {/if}
         {/if}
-        
+
         {if $dbService}
             {assign var=serviceType value=$dbService.type}
         {elseif isset($service.SOVA_SERVICE_TYPE)}
@@ -48,7 +48,7 @@
         {else}
             {assign var=zone_row_type value="empty"}
         {/if}
-            
+
         <tr onmouseover="highlightZone(this, true)" onmouseout="highlightZone(this, false)" id="service{$service.md5}" class="state{$service.state}
         {if $smarty.foreach.services.first} first{elseif $smarty.foreach.services.last} last{/if} zone-row-id-{$dbService.zone.zone_id}
         {if $zone_row_type == "new"} zone-row-start{elseif $zone_row_type == "continue"} zone-row-continue{/if}
@@ -62,7 +62,7 @@
                 <td class="zone-header-empty first">&mdash;</td>
             {/if}
             <td class="service-type service-type-{if $serviceType}{$serviceType|escape}{else}unknown{/if}">{if $serviceType eq "sensor"}ДТ{elseif $serviceType eq "service"}СЛ{elseif $serviceType eq "button"}СК{else}--{/if}</td>
-            <td>{if $dbService.communication_device.logical_number}{$dbService.communication_device.logical_number}/{/if}{$dbService.position}</td>
+            <td>{$dbService.position}{if $dbService.communication_device.logical_number}/{$dbService.communication_device.logical_number}{/if}</td>
             <td>
                 {if $dbService && (!isset($nolinks)|| !$nolinks)}<a href="{$smarty.const.SOVA_BASE_URL}service/index/id/{$host.host_id}:{$service.description|escape:"url"}" class="serviceLink{if $dbService.type eq 'service'} service{/if}">{/if}{$serviceName}{if $dbService && (!isset($nolinks) || !$nolinks)}</a>{/if}
             </td>
