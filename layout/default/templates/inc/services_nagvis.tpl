@@ -12,7 +12,7 @@
             {if !isset($service['md5']) or !isset($services[$service.md5])}
                 {continue}
             {/if}
-            {include file="inc/service/nagvis/service.tpl" services=$services nagios_service=$nagios_service}
+            {include file="inc/service/nagvis/service.tpl" services=$services service=$service}
         {elseif $service['type'] eq 'textbox'}
             {include file="inc/service/nagvis/textbox.tpl" service=$service}
         {/if}
