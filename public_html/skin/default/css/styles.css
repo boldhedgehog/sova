@@ -576,9 +576,15 @@ div.details label {
 div.host input, div.host textarea { width: 750px; }
 div.host textarea { height: 100px; }
 
-div.nagvisServiceIcon {
+div.nagvisServiceIcon, div.nagvisTextBox {
     position: absolute;
     cursor: pointer;
+}
+
+div.nagvisTextBox {
+    padding: 2px;
+    background: #ffffff;
+    border: 1px solid #000000;
 }
 
 div.nagvisServiceIcon img, div.nagvisServiceIcon a {

@@ -27,6 +27,9 @@ abstract class nagiosObjectModel extends basicModel
         self::STATE_PENDING => 'PENDING'
     );
 
+    const NAGVIS_REGEX_PART_TYPE = 1;
+    const NAGVIS_REGEX_PART_DEFINITION = 2;
+
     static function stateCaption($state)
     {
         return self::$stateCaptions[intval($state)];
@@ -140,32 +143,40 @@ abstract class nagiosObjectModel extends basicModel
             $this->data["nagvis_thumb_url"] = NAGVIS_IMAGES_URL . $this->data["nagvis_data"]["nagvis_image_name"];
         }
 
-        preg_match_all('/define service \{\n([^\}]+)\n\}/smiu', $mapConfig, $matches);
+        preg_match_all('/define (service|textbox) \{\n([^\}]+)\n\}/smiu', $mapConfig, $matches);
 
-        // services from NagVis map
-        $services = array();
-        foreach ($matches[1] as $match) {
-            $service = array();
-            preg_match_all('/(^[0-9a-z\s\_\.\-\/\\\]+=[0-9a-zа-яёіїє\'\s\_\.\-\/\\\]+$)+/smiu', $match, $seviceMatches);
+        // definitions from NagVis map
+        $definitions = array();
+        foreach ($matches[self::NAGVIS_REGEX_PART_DEFINITION] as $key => $match) {
+            $definition = array(
+                'type' => $matches[self::NAGVIS_REGEX_PART_TYPE][$key]
+            );
+            preg_match_all('/(^[0-9a-z\s\_\.\-\/\\\]+=[0-9a-zа-яёіїє\'\s\_\.\-\/\\\]+$)+/smiu', $match, $serviceMatches);
 
-            foreach ($seviceMatches[1] as $pair) {
+            foreach ($serviceMatches[1] as $pair) {
                 list($key, $value) = explode('=', $pair);
-                $service[$key] = $value;
+                $definition[$key] = $value;
             }
-            $services[] = $service;
+
+            if (isset($definition['host_name']) && isset($definition['service_description'])) {
+                $hashKey = $definition['host_name'] . $definition['service_description'];
+            } else {
+                $hashKey = $definition['object_id'];
+            }
+
+            $definition['md5'] = hashKey($hashKey);
+
+            $definitions[] = $definition;
         }
 
         $keys = array();
-        foreach ($services as $key => $service) {
-            $services[$key]["md5"] = hashKey($service['host_name'] . $service['service_description']);
-            $keys[] = $services[$key]["md5"].'-'.$key;
-            //$services[$service["md5"]] = $service;
-            //unset($services[$key]);
+        foreach ($definitions as $key => $definition) {
+            $keys[] = $definitions[$key]['md5'] . '-' . $key;
         }
 
-        $this->data["nagvis_map_config"] = ($keys) ? array_combine($keys, $services) : array();
+        $this->data["nagvis_map_config"] = ($keys) ? array_combine($keys, $definitions) : array();
 
-        unset($services);
+        unset($definitions);
 
         return true;
     }
